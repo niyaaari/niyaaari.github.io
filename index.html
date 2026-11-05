@@ -29,12 +29,12 @@
     .service::before{top:-6px;bottom:-6px;left:0;right:0;border-left:2px solid var(--deco);border-right:2px solid var(--deco)}
     .service::after{top:0;bottom:0;left:-6px;right:-6px;border-top:2px solid var(--deco);border-bottom:2px solid var(--deco)}
     .service>*{position:relative;z-index:1}
-    .service:hover,.service:focus-visible{background-color:#6C4732;color:#fff;transform:scale(.98)}
-    .service:hover::before,.service:focus-visible::before{top:0;bottom:0;border-left-color:#fff;border-right-color:#fff}
-    .service:hover::after,.service:focus-visible::after{left:0;right:0;border-top-color:#fff;border-bottom-color:#fff}
-    .service:hover p,.service:focus-visible p,.service:hover .open,.service:focus-visible .open{color:#fff}
+    .service:hover,.service:focus-visible{background-color:rgba(108,71,50,.08);color:var(--text);transform:scale(.995)}
+    .service:hover::before,.service:focus-visible::before{top:0;bottom:0}
+    .service:hover::after,.service:focus-visible::after{left:0;right:0}
+    .service:hover p,.service:focus-visible p{color:var(--muted)} .service:hover .open,.service:focus-visible .open{color:var(--accent)}
     .service:focus-visible{outline:2px solid #6C4732;outline-offset:5px}
-    .service:hover .status,.service:focus-visible .status{color:#fff;background:rgba(255,255,255,.18)}
+    .service:hover .status,.service:focus-visible .status{color:#4b8b73;background:rgba(105,190,151,.15)}
     @media(prefers-reduced-motion:reduce){.service,.service::before,.service::after{transition:none}.service:hover,.service:focus-visible{transform:none}}
     .service-top{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:20px}
     .service-icon{width:45px;height:45px;display:grid;place-items:center;border:1px solid #6C4732;border-radius:15px;background:transparent}.service-icon svg{stroke:#6C4732}.service-icon svg{width:25px;height:25px;display:block}
