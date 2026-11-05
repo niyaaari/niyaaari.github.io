@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#eef5ff">
+  <title>Pantaro - サービス一覧</title>
+  <style>
+    @font-face{font-family:GenEi;src:url('https://raw.githubusercontent.com/niyaaari/part-time-pay-calculator/main/fonts/GenEiMGothic2-Regular.ttf')} 
+    @font-face{font-family:GenEi;src:url('https://raw.githubusercontent.com/niyaaari/part-time-pay-calculator/main/fonts/GenEiMGothic2-Medium.ttf');font-weight:500}
+    @font-face{font-family:GenEi;src:url('https://raw.githubusercontent.com/niyaaari/part-time-pay-calculator/main/fonts/GenEiMGothic2-Bold.ttf');font-weight:700}
+    :root{color-scheme:light;--text:#253247;--muted:#718096;--panel:rgba(255,255,255,.72);--border:rgba(255,255,255,.9);--accent:#638fe8;--shadow:0 12px 36px rgba(74,105,160,.12)}
+    *{box-sizing:border-box}
+    body{margin:0;min-height:100vh;font-family:GenEi,'Yu Gothic',sans-serif;color:var(--text);background:linear-gradient(135deg,#eaf4ff 0%,#f4f1ff 48%,#e9f8f6 100%);transition:background .25s,color .25s}
+    body.dark{color:#edf2ff;background:linear-gradient(135deg,#151d2d 0%,#211f35 52%,#142a30 100%);--text:#edf2ff;--muted:#aab6ca;--panel:rgba(31,42,62,.76);--border:rgba(255,255,255,.1);--accent:#91b5ff;--shadow:0 12px 36px rgba(0,0,0,.24);color-scheme:dark}
+    .page{width:min(920px,calc(100% - 32px));margin:0 auto;padding:30px 0 56px}
+    header{display:flex;align-items:center;justify-content:space-between;margin-bottom:52px}
+    .brand{font-size:19px;font-weight:700;letter-spacing:.04em;color:inherit;text-decoration:none}
+    .theme{border:1px solid var(--border);background:var(--panel);color:inherit;border-radius:999px;padding:9px 15px;font:inherit;cursor:pointer;box-shadow:var(--shadow);transition:transform .2s}
+    .theme:hover{transform:translateY(-2px)}
+    .hero{text-align:center;margin-bottom:42px}
+    .eyebrow{font-size:13px;letter-spacing:.18em;color:var(--muted);margin-bottom:12px}
+    h1{font-size:clamp(34px,7vw,54px);margin:0;font-weight:700;letter-spacing:.04em}
+    .subtitle{color:var(--muted);font-size:14px;margin:15px 0 0}
+    .section-title{font-size:17px;font-weight:700;margin:0 0 16px 4px}
+    .services{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px}
+    .service{display:flex;flex-direction:column;min-height:210px;padding:25px 24px 21px;border:1px solid var(--border);border-radius:24px;background:var(--panel);box-shadow:var(--shadow);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);color:inherit;text-decoration:none;transition:transform .2s,box-shadow .2s,border-color .2s}
+    .service:hover{transform:translateY(-5px);box-shadow:0 18px 42px rgba(74,105,160,.18);border-color:rgba(99,143,232,.5)}
+    .service-top{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:20px}
+    .service-icon{width:45px;height:45px;display:grid;place-items:center;border-radius:15px;background:rgba(99,143,232,.13);font-size:23px}
+    .status{font-size:11px;color:#4b8b73;background:rgba(105,190,151,.15);padding:5px 10px;border-radius:999px;white-space:nowrap}
+    .service h2{font-size:21px;margin:0 0 9px;font-weight:700}
+    .service p{font-size:13px;line-height:1.8;color:var(--muted);margin:0}
+    .open{margin-top:auto;padding-top:19px;color:var(--accent);font-size:13px;font-weight:700}
+    footer{text-align:center;color:var(--muted);font-size:11px;margin-top:52px}
+    @media(max-width:600px){.page{padding-top:22px}header{margin-bottom:42px}.services{grid-template-columns:1fr;gap:14px}.service{min-height:185px;padding:22px}.hero{margin-bottom:34px}}
+  </style>
+</head>
+<body>
+  <main class="page">
+    <header>
+      <a class="brand" href="./">Pantaro</a>
+      <button class="theme" id="themeToggle" type="button" aria-label="テーマ切り替え">🌙 ナイトモード</button>
+    </header>
+    <section class="hero">
+      <div class="eyebrow">MY DIGITAL TOOLS</div>
+      <h1>Pantaro</h1>
+      <p class="subtitle">毎日のちょっとした作業を、もっと便利に。</p>
+    </section>
+    <section>
+      <h2 class="section-title">サービス一覧</h2>
+      <div class="services">
+        <a class="service" href="https://niyaaari.github.io/part-time-pay-calculator/">
+          <div class="service-top"><div class="service-icon">💰</div><span class="status">公開中</span></div>
+          <h2>給料計算くん</h2>
+          <p>勤務時間や時給から、給料をかんたん計算。日々の勤務記録や月ごとの合計も管理できます。</p>
+          <div class="open">サービスを開く →</div>
+        </a>
+        <a class="service" href="https://niyaaari.github.io/character-counter/">
+          <div class="service-top"><div class="service-icon">📝</div><span class="status">公開中</span></div>
+          <h2>文字数カウントくん</h2>
+          <p>文章の文字数や空白を除いた文字数をリアルタイムでカウント。目標文字数の確認にも使えます。</p>
+          <div class="open">サービスを開く →</div>
+        </a>
+      </div>
+    </section>
+    <footer>© Pantaro</footer>
+  </main>
+  <script>
+    const button=document.getElementById('themeToggle');
+    const saved=localStorage.getItem('pantaro_portal_theme');
+    if(saved==='dark')document.body.classList.add('dark');
+    function updateButton(){button.textContent=document.body.classList.contains('dark')?'☀️ ライトモード':'🌙 ナイトモード'}
+    updateButton();
+    button.addEventListener('click',()=>{document.body.classList.toggle('dark');localStorage.setItem('pantaro_portal_theme',document.body.classList.contains('dark')?'dark':'light');updateButton()});
+  </script>
+</body>
+</html>
