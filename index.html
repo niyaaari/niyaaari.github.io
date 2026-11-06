@@ -37,7 +37,7 @@
     .service:hover .status,.service:focus-visible .status{color:#4b8b73;background:rgba(105,190,151,.15)}
     @media(prefers-reduced-motion:reduce){.service,.service::before,.service::after{transition:none}.service:hover,.service:focus-visible{transform:none}}
     .service-top{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:20px}
-    .service-icon{width:45px;height:45px;display:grid;place-items:center;border:1px solid #6C4732;border-radius:15px;background:transparent}.service-icon svg{stroke:#6C4732}.service-icon svg{width:25px;height:25px;display:block}
+    .service-icon{width:45px;height:45px;display:grid;place-items:center;border:1px solid #6C4732;border-radius:15px;background:transparent}.service-icon svg{stroke:#6C4732;width:25px;height:25px;display:block}.clock-hour,.clock-minute{transform-box: view-box;transform-origin:12px 12px}.service:hover .clock-hour,.service:focus-visible .clock-hour{animation:clock-hour-spin .6s cubic-bezier(.4,0,.2,1)}.service:hover .clock-minute,.service:focus-visible .clock-minute{animation:clock-minute-turn .5s ease-in-out}.pen-moving{transform-box:fill-box;transform-origin:center;}.service:hover .pen-moving,.service:focus-visible .pen-moving{animation:pen-jiggle .42s ease-in-out}.yen-main,.yen-secondary{stroke-dasharray:1;stroke-dashoffset:0}.service:hover .yen-main,.service:focus-visible .yen-main{animation:yen-draw .6s ease forwards}.service:hover .yen-secondary,.service:focus-visible .yen-secondary{animation:yen-draw .4s ease .5s forwards}.service:hover .yen-secondary-2,.service:focus-visible .yen-secondary-2{animation-delay:.58s}@keyframes clock-hour-spin{from{transform:rotate(0)}to{transform:rotate(360deg)}}@keyframes clock-minute-turn{from{transform:rotate(0)}to{transform:rotate(45deg)}}@keyframes pen-jiggle{0%,100%{transform:translate(0,0) rotate(0)}25%{transform:translate(-1px,1.5px) rotate(-.5deg)}55%{transform:translate(1.5px,-1px) rotate(.5deg)}80%{transform:translate(0,0) rotate(-.5deg)}}@keyframes yen-draw{0%{opacity:0;stroke-dashoffset:1}15%{opacity:1}100%{opacity:1;stroke-dashoffset:0}}@media(prefers-reduced-motion:reduce){.service:hover .clock-hour,.service:focus-visible .clock-hour,.service:hover .clock-minute,.service:focus-visible .clock-minute,.service:hover .pen-moving,.service:focus-visible .pen-moving,.service:hover .yen-main,.service:focus-visible .yen-main,.service:hover .yen-secondary,.service:focus-visible .yen-secondary{animation:none}}
     .status{font-size:11px;color:#4b8b73;background:rgba(105,190,151,.15);padding:5px 10px;border-radius:999px;white-space:nowrap}
     .service h2{font-size:21px;margin:0 0 9px;font-weight:700}
     .service p{font-size:13px;line-height:1.8;color:var(--muted);margin:0}
@@ -60,19 +60,19 @@
       <h2 class="section-title">サービス一覧</h2>
       <div class="services">
         <a class="service" href="https://niyaaari.github.io/part-time-pay-calculator/">
-          <div class="service-top"><div class="service-icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#6C4732" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="12" y1="1" x2="12" y2="23"></line><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg></div><span class="status">公開中</span></div>
+          <div class="service-top"><div class="service-icon"><svg class="yen-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#6C4732" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path class="yen-main" d="M12 9.5V21m0-11.5L6 3m6 6.5L18 3"></path><path class="yen-secondary" d="M18 11h-12"></path><path class="yen-secondary yen-secondary-2" d="M18 15h-12"></path></svg></div><span class="status">公開中</span></div>
           <h2>給料計算くん</h2>
           <p>勤務時間や時給から、給料をかんたん計算。日々の勤務記録や月ごとの合計も管理できます。</p>
           <div class="open">サービスを開く →</div>
         </a>
         <a class="service" href="https://niyaaari.github.io/character-counter/">
-          <div class="service-top"><div class="service-icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path></svg></div><span class="status">公開中</span></div>
+          <div class="service-top"><div class="service-icon"><svg class="pen-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#6C4732" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="overflow:visible"><path d="M12 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path class="pen-moving" d="M18.375 2.625a1 1 0 0 1 3 3l-9.013 9.014a2 2 0 0 1-.853.505l-2.873.84a.5.5 0 0 1-.62-.62l.84-2.873a2 2 0 0 1 .506-.852z"></path></svg></div><span class="status">公開中</span></div>
           <h2>文字数カウントくん</h2>
           <p>文章の文字数や空白を除いた文字数をリアルタイムでカウント。目標文字数の確認にも使えます。</p>
           <div class="open">サービスを開く →</div>
         </a>
         <a class="service" href="https://niyaaari.github.io/clock/">
-          <div class="service-top"><div class="service-icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#6C4732" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M12 7v5l3 2"></path></svg></div><span class="status">公開中</span></div>
+          <div class="service-top"><div class="service-icon"><svg class="clock-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#6C4732" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"></circle><line class="clock-hour" x1="12" y1="12" x2="12" y2="6"></line><line class="clock-minute" x1="12" y1="12" x2="16" y2="12"></line></svg></div><span class="status">公開中</span></div>
           <h2>時計くん</h2>
           <p>リアルタイム時計、日時指定カウントダウン、ラップ機能付きストップウォッチを使えます。</p>
           <div class="open">サービスを開く →</div>
