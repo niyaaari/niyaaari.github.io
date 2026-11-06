@@ -15,7 +15,7 @@
     body.dark{color:#e7e9ee;background:#171b25;--bg:#171b25;--text:#e7e9ee;--muted:#a5aab5;--panel:rgba(43,46,56,.76);--border:rgba(255,255,255,.12);--deco:#fff;--accent:#91aaff;--shadow:0 14px 38px rgba(0,0,0,.22);--control-border:rgba(255,255,255,.2);color-scheme:dark}
     .page{width:min(920px,calc(100% - 32px));margin:0 auto;padding:30px 0 56px}
     header{display:flex;align-items:center;justify-content:space-between;margin-bottom:52px}
-    .brand{font-size:19px;font-weight:700;letter-spacing:.04em;color:inherit;text-decoration:none}
+    .brand{display:inline-flex;align-items:center;gap:7px;font-size:19px;font-weight:700;letter-spacing:.04em;color:inherit;text-decoration:none}.brand-mark{display:block;width:23px;height:23px;flex:none}
     .theme{display:grid;place-items:center;width:40px;height:40px;padding:0;border:1px solid var(--control-border);border-radius:999px;background:var(--panel);color:var(--text);cursor:pointer;position:relative;isolation:isolate;overflow:hidden;transition:background-color .2s,color .2s,border-color .2s,transform .15s}.theme svg{display:block;width:21px;height:21px;fill:none;stroke:currentColor;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round}
     .theme:active{transform:scale(.98) translateY(1px)}.theme::after{content:"";position:absolute;inset:0;border:1px solid currentColor;border-radius:inherit;opacity:0;pointer-events:none;transition:opacity .25s}.theme:hover::after,.theme:focus-visible::after{opacity:.38}.theme:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
     .hero{text-align:center;margin-bottom:42px}
@@ -49,7 +49,7 @@
 <body>
   <main class="page">
     <header>
-      <a class="brand" href="./">Pantaro</a>
+      <a class="brand" href="./"><svg class="brand-mark" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M8.581 9.986a.27.27 0 0 0-.291-.355l-5.055.72a.27.27 0 0 0-.229.326a.27.27 0 0 0 .07.13l3.6 3.716a.266.266 0 0 0 .378.013a.3.3 0 0 0 .071-.12zM6.745 20.393a.265.265 0 0 0 .376.317l4.727-2.244a.27.27 0 0 1 .222 0l4.94 2.24a.27.27 0 0 0 .365-.334c-.932-2.806-1.774-5.58-2.674-8.38a.265.265 0 0 0-.476-.053l-1.996 3.578a.27.27 0 0 1-.238.138h-.085a.26.26 0 0 1-.232-.143L9.736 11.95a.27.27 0 0 0-.233-.143h-.026a.265.265 0 0 0-.26.19a244 244 0 0 0-2.472 8.396m10.093-6.056a.264.264 0 0 0 .445.106l3.636-3.636a.271.271 0 0 0-.153-.461l-5.029-.704a.27.27 0 0 0-.296.35z"/><path fill="currentColor" d="M14.024 9.551a.32.32 0 0 0 0-.248l-.027-.064l-1.784-5.78a.265.265 0 0 0-.513 0l-1.747 5.78l-.026.085a.3.3 0 0 0 .01.201l1.731 3.991a.28.28 0 0 0 .244.16h.063a.27.27 0 0 0 .244-.16l1.8-3.965z"/></svg><span>Pantaro</span></a>
       <button class="theme" id="themeToggle" type="button" aria-label="ナイトモードに切り替え"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg></button>
     </header>
     <section class="hero">
