@@ -22,6 +22,24 @@ main{max-width:600px;margin:auto}
 .theme-toggle{display:grid;place-items:center;width:32px;height:32px;padding:0;border:1px solid var(--control-border);border-radius:50%;background:rgba(255,255,255,.48);color:var(--ink);cursor:pointer;transition:background .5s,border-color .5s,color .5s,transform .25s}
 :root[data-theme="dark"] .theme-toggle{background:rgba(145,170,255,.12);border-color:rgba(145,170,255,.35);color:#cbd8ff}
 .theme-toggle:active{transform:scale(.92)}.theme-toggle svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:1.65;stroke-linecap:round;stroke-linejoin:round}
+
+.topbar-actions{display:flex;align-items:center;gap:8px}
+.help-toggle{width:32px;height:32px;display:grid;place-items:center;flex:none;padding:0;border:1px solid var(--control-border);border-radius:50%;background:rgba(255,255,255,.48);color:var(--ink);cursor:pointer;transition:background .28s ease,color .28s ease,border-color .28s ease,transform .2s ease}
+:root[data-theme="dark"] .help-toggle{background:rgba(145,170,255,.12);border-color:rgba(145,170,255,.35);color:#cbd8ff}
+.help-toggle:active{transform:scale(.92)}
+.help-toggle svg{width:16px;height:16px;display:block;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+.help-toggle:hover .help-mark,.help-toggle:focus-visible .help-mark{animation:help-wiggle .5s ease-in-out}
+@keyframes help-wiggle{0%,100%{transform:rotate(0)}20%{transform:rotate(-10deg)}40%{transform:rotate(10deg)}60%{transform:rotate(-10deg)}80%{transform:rotate(0)}}
+.help-overlay{position:fixed;inset:0;z-index:1000;display:grid;place-items:center;padding:20px;background:rgba(20,18,16,.48)}
+.help-overlay[hidden]{display:none}
+.help-dialog{width:min(100%,480px);max-height:min(80vh,620px);overflow:auto;padding:23px;border:1px solid var(--control-border);border-radius:16px;background:var(--bg);color:var(--ink);box-shadow:0 18px 55px rgba(0,0,0,.22)}
+.help-dialog h2{margin:0 0 16px;font-size:18px}
+.help-dialog p{margin:0 0 13px;font-size:13px;line-height:1.85;color:var(--muted)}
+.help-dialog p:last-of-type{margin-bottom:20px}
+.help-dialog strong{color:var(--ink)}
+.help-dialog .help-close{display:block;width:100%;border:0;border-radius:10px;background:var(--accent);color:#fff;padding:11px;font:inherit;font-weight:700;cursor:pointer}
+@media(prefers-reduced-motion:reduce){.help-toggle:hover .help-mark,.help-toggle:focus-visible .help-mark{animation:none}}
+
 h1{font-size:30px;margin:7px 0;font-weight:700}.sub{color:var(--muted);font-size:13px;line-height:1.7;margin:0 0 22px}
 .card{position:relative;isolation:isolate;margin:13px 0;padding:19px;background:transparent}
 .card:before,.card:after{content:"";position:absolute;z-index:0;pointer-events:none;transition:all .32s ease-out}
@@ -54,7 +72,7 @@ footer{color:var(--muted);font-size:11px;text-align:center;margin-top:42px}
 <a class="brand" href="https://niyaaari.github.io/" aria-label="kubearma サービス一覧へ">
 <svg class="brand-mark" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M8.581 9.986a.27.27 0 0 0-.291-.355l-5.055.72a.27.27 0 0 0-.229.326a.27.27 0 0 0 .07.13l3.6 3.716a.266.266 0 0 0 .378.013a.3.3 0 0 0 .071-.12zM6.745 20.393a.265.265 0 0 0 .376.317l4.727-2.244a.27.27 0 0 1 .222 0l4.94 2.24a.27.27 0 0 0 .365-.334c-.932-2.806-1.774-5.58-2.674-8.38a.265.265 0 0 0-.476-.053l-1.996 3.578a.27.27 0 0 1-.238.138h-.085a.26.26 0 0 1-.232-.143L9.736 11.95a.27.27 0 0 0-.233-.143h-.026a.265.265 0 0 0-.26.19a244 244 0 0 0-2.472 8.396m10.093-6.056a.264.264 0 0 0 .445.106l3.636-3.636a.271.271 0 0 0-.153-.461l-5.029-.704a.27.27 0 0 0-.296.35z"/><path fill="currentColor" d="M14.024 9.551a.32.32 0 0 0 0-.248l-.027-.064l-1.784-5.78a.265.265 0 0 0-.513 0l-1.747 5.78l-.026.085a.3.3 0 0 0 .01.201l1.731 3.991a.28.28 0 0 0 .244.16h.063a.27.27 0 0 0 .244-.16l1.8-3.965z"/></svg>
 <span>kubearma</span></a>
-<button class="theme-toggle" id="themeToggle" type="button" aria-label="テーマを切り替え" title="テーマを切り替え"><svg id="themeIcon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M4.93 4.93l1.42 1.42m11.3 11.3 1.42 1.42M2 12h2m16 0h2M4.93 19.07l1.42-1.42m11.3-11.3 1.42-1.42"/></svg></button>
+<div class="topbar-actions"><button class="help-toggle" id="helpToggle" type="button" aria-label="改行の仕組みを表示" title="改行の仕組み"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10"/><g class="help-mark"><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><path d="M12 17h.01"/></g></svg></button><button class="theme-toggle" id="themeToggle" type="button" aria-label="テーマを切り替え" title="テーマを切り替え"><svg id="themeIcon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M4.93 4.93l1.42 1.42m11.3 11.3 1.42 1.42M2 12h2m16 0h2M4.93 19.07l1.42-1.42m11.3-11.3 1.42-1.42"/></svg></button></div>
 </div>
 <h1>どこでも改行くん</h1>
 <p class="sub">改行したい位置を、特殊文字「 」にかんたん変換。文章を入力して変換ボタンを押すだけです。</p>
@@ -83,12 +101,31 @@ footer{color:var(--muted);font-size:11px;text-align:center;margin-top:42px}
 </section>
 
 </main>
+
+<div class="help-overlay" id="helpOverlay" hidden>
+<section class="help-dialog" role="dialog" aria-modal="true" aria-labelledby="helpTitle">
+<h2 id="helpTitle">改行の仕組みと注意点</h2>
+<p>このツールは、通常の改行コードではなく、<strong>特殊文字「LSEP（Line Separator）」</strong>を文章に挿入することで、改行させる仕組みを利用しています。</p>
+<p><strong>表示はiPhoneなど、端末やアプリの環境に依存します。</strong> iPhoneでは改行として表示される場合がありますが、WindowsやAndroidでは改行されず、半角スペースのように表示されることがあります。</p>
+<p>また、ウェブサイトや使用する環境によっては、正しく改行されて見えない場合があります。すべての場所で同じ表示になるわけではありません。</p>
+<button class="help-close" id="helpClose" type="button">閉じる</button>
+</section>
+</div>
 <script>
 const root=document.documentElement;
 const themeButton=document.getElementById('themeToggle');
 function applyTheme(theme){root.dataset.theme=theme;try{localStorage.setItem('pantaro_theme',theme)}catch(e){};const dark=theme==='dark';themeButton.setAttribute('aria-label',dark?'ライトモードに切り替え':'ナイトモードに切り替え');document.getElementById('themeIcon').innerHTML=dark?'<path d="M20.9 13A9 9 0 0 1 11 3.1 9 9 0 1 0 20.9 13Z"/><path d="M16 3v4m-2-2h4"/>':'<circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M4.93 4.93l1.42 1.42m11.3 11.3 1.42 1.42M2 12h2m16 0h2M4.93 19.07l1.42-1.42m11.3-11.3 1.42-1.42"/>'}
 let saved='light';try{saved=localStorage.getItem('pantaro_theme')||'light'}catch(e){}applyTheme(saved);
 themeButton.addEventListener('click',()=>applyTheme(root.dataset.theme==='dark'?'light':'dark'));
+
+const helpToggle=document.getElementById('helpToggle');
+const helpOverlay=document.getElementById('helpOverlay');
+const helpClose=document.getElementById('helpClose');
+function closeHelp(){helpOverlay.hidden=true;helpToggle.focus()}
+helpToggle.addEventListener('click',()=>{helpOverlay.hidden=false;helpClose.focus()});
+helpClose.addEventListener('click',closeHelp);
+helpOverlay.addEventListener('click',e=>{if(e.target===helpOverlay)closeHelp()});
+document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!helpOverlay.hidden)closeHelp()});
 const source=document.getElementById('sourceText'),result=document.getElementById('resultText'),message=document.getElementById('message');
 document.getElementById('convertButton').addEventListener('click',()=>{result.value=source.value.replace(/\r\n|\r|\n/g,'\u2028');message.textContent='変換しました！';});
 document.getElementById('clearButton').addEventListener('click',()=>{source.value='';result.value='';message.textContent='入力内容をクリアしました。';source.focus()});
