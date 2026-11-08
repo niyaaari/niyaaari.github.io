@@ -46,6 +46,12 @@ h1{font-size:30px;margin:7px 0;font-weight:700}.sub{color:var(--muted);font-size
 .card:before{top:-6px;bottom:-6px;left:0;right:0;border-left:2px solid var(--deco);border-right:2px solid var(--deco)}
 .card:after{top:0;bottom:0;left:-6px;right:-6px;border-top:2px solid var(--deco);border-bottom:2px solid var(--deco)}
 .card>*{position:relative;z-index:1}
+.card{transition:background-color .3s ease,transform .35s cubic-bezier(.2,.9,.4,1.1)}
+@media(hover:hover) and (pointer:fine){.card:hover{background:rgba(108,71,50,.035);transform:scale(.995)}.card:hover:before{top:0;bottom:0}.card:hover:after{left:0;right:0}}
+@media(prefers-reduced-motion:reduce){.card{transition:none}.card:hover{transform:none}}
+@keyframes pageEnter{from{opacity:0;transform:translateY(8px) scale(.992)}to{opacity:1;transform:translateY(0) scale(1)}}
+.help-dialog{animation:pageEnter .26s cubic-bezier(.2,.7,.25,1) both}
+@media(prefers-reduced-motion:reduce){.help-dialog{animation:none}}
 h2{font-size:16px;margin:0 8px 15px}
 label{display:block;font-size:13px;font-weight:650;color:var(--muted);margin:0 8px 9px}
 textarea{display:block;width:100%;margin:0;min-height:260px;resize:vertical;padding:15px;border:1px solid var(--control-border);border-radius:12px;background:var(--input);color:var(--ink);font:inherit;font-size:15px;line-height:1.9;outline:none;transition:border-color .2s,background .28s,color .28s}
