@@ -9,10 +9,10 @@
     @font-face{font-family:GenEi;src:url('https://raw.githubusercontent.com/niyaaari/part-time-pay-calculator/main/fonts/GenEiMGothic2-Regular.ttf')} 
     @font-face{font-family:GenEi;src:url('https://raw.githubusercontent.com/niyaaari/part-time-pay-calculator/main/fonts/GenEiMGothic2-Medium.ttf');font-weight:500}
     @font-face{font-family:GenEi;src:url('https://raw.githubusercontent.com/niyaaari/part-time-pay-calculator/main/fonts/GenEiMGothic2-Bold.ttf');font-weight:700}
-    :root{color-scheme:light;--bg:#E9E2D0;--text:#6C4732;--muted:#806a5c;--panel:transparent;--theme-button:rgba(255,255,255,.48);--border:#6C4732;--deco:#6C4732;--accent:#6C4732;--shadow:none;--control-border:rgba(108,71,50,.35)}
+    :root{color-scheme:light;--bg:#E9E2D0;--text:#6C4732;--muted:#806a5c;--panel:transparent;--theme-button:rgba(255,255,255,.24);--border:#6C4732;--deco:#6C4732;--accent:#6C4732;--shadow:none;--control-border:rgba(108,71,50,.35)}
     *{box-sizing:border-box}
     body{margin:0;min-height:100vh;font-family:GenEi,'Yu Gothic',sans-serif;color:var(--text);background:var(--bg);transition:background .25s,color .25s}
-    body.dark{color:#e7e9ee;background:#171b25;--bg:#171b25;--text:#e7e9ee;--muted:#a5aab5;--panel:rgba(43,46,56,.76);--theme-button:rgba(255,255,255,.09);--border:rgba(255,255,255,.12);--deco:#596170;--accent:#91aaff;--shadow:0 14px 38px rgba(0,0,0,.22);--control-border:rgba(255,255,255,.2);color-scheme:dark}
+    body.dark{color:#e7e9ee;background:#171b25;--bg:#171b25;--text:#e7e9ee;--muted:#a5aab5;--panel:rgba(43,46,56,.76);--theme-button:rgba(43,46,56,.76);--border:rgba(255,255,255,.12);--deco:#596170;--accent:#91aaff;--shadow:0 14px 38px rgba(0,0,0,.22);--control-border:rgba(255,255,255,.2);color-scheme:dark}
     .page{width:min(920px,calc(100% - 32px));margin:0 auto;padding:30px 0 56px}
     header{display:flex;align-items:center;justify-content:space-between;margin-bottom:52px}
     .brand{display:inline-flex;align-items:center;gap:6px;font-size:14px;font-weight:700;letter-spacing:.04em;color:inherit;text-decoration:none}.brand-mark{display:block;width:17px;height:17px;flex:none}
@@ -173,7 +173,7 @@
         </a>
       </div>
     </section>
-    <footer>© kubearma <span class="version">v26.12</span></footer>
+    <footer>© kubearma <span class="version">v26.13</span></footer>
   </main>
   <script>
     const title=document.getElementById('heroTitle');
