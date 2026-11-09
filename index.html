@@ -30,6 +30,39 @@
     .hero{text-align:center;margin-bottom:42px}
     .eyebrow{font-size:13px;letter-spacing:.18em;color:var(--muted);margin-bottom:12px}
     h1{font-size:clamp(34px,7vw,54px);margin:0;font-weight:700;letter-spacing:.04em}
+
+    /* ランダムで切り替わる「くま」の文字エフェクト */
+    #heroTitle{display:inline-block;position:relative}
+    #heroTitle.fx-caustic{color:transparent;background:
+      radial-gradient(ellipse 55% 35% at 18% 42%,#fff 0 8%,transparent 42%),
+      radial-gradient(ellipse 45% 50% at 68% 58%,#b9fbff 0 10%,transparent 46%),
+      radial-gradient(ellipse 40% 30% at 42% 78%,#fff 0 6%,transparent 40%),
+      radial-gradient(ellipse 50% 40% at 82% 28%,#e8c5ff 0 9%,transparent 44%),
+      linear-gradient(165deg,#4ff8ff 0%,#315c83 42%,#a34b9a 100%);
+      background-size:160% 160%,180% 170%,150% 150%,170% 160%,100% 100%;
+      -webkit-background-clip:text;background-clip:text;
+      filter:drop-shadow(0 0 10px rgba(79,248,255,.4));
+      animation:hero-caustic 4.2s ease-in-out infinite alternate}
+    @keyframes hero-caustic{0%{background-position:0% 25%,100% 80%,35% 100%,90% 5%,0 0%;filter:drop-shadow(0 0 7px rgba(79,248,255,.3)) brightness(1)}100%{background-position:85% 70%,5% 15%,70% 0%,15% 90%,0 0%;filter:drop-shadow(0 0 16px rgba(79,248,255,.6)) brightness(1.18)}}
+    #heroTitle.fx-groovy{display:inline-flex;gap:0;color:#ffe6bd;transform:skewX(-8deg);text-shadow:none}
+    #heroTitle.fx-groovy b{font-weight:inherit;display:inline-block;animation:hero-groovy 3.2s cubic-bezier(.45,0,.3,1) infinite;animation-delay:calc(var(--i)*.1s)}
+    @keyframes hero-groovy{0%,100%{transform:translate(0,0);text-shadow:1px 1px 0 #f6b33d,2px 2px 0 #e8692c,3px 3px 0 #b23a28,4px 4px 0 #5b2a1e}35%,65%{transform:translate(-2px,-4px);text-shadow:3px 3px 0 #f6b33d,6px 6px 0 #e8692c,9px 9px 0 #b23a28,12px 12px 0 #5b2a1e}}
+    #heroTitle.fx-lava{color:transparent;background:
+      radial-gradient(circle at 24% 80%,#ffd000 0 19%,transparent 22%),
+      radial-gradient(circle at 74% 26%,#ff7a00 0 21%,transparent 24%),
+      radial-gradient(circle at 50% 58%,#ff0066 0 23%,transparent 26%),
+      radial-gradient(circle at 12% 30%,#ff2d00 0 17%,transparent 20%),
+      linear-gradient(180deg,#b00028,#4d0016 96%);
+      background-size:150% 190%;background-position:0% 0%;
+      -webkit-background-clip:text;background-clip:text;
+      filter:drop-shadow(0 0 14px #ff4d1a66) drop-shadow(0 0 5px #ffb70366);
+      animation:hero-lava-drift 9s ease-in-out infinite}
+    #heroTitle.fx-lava::after{content:attr(data-text);position:absolute;inset:0;pointer-events:none;color:transparent;
+      background:radial-gradient(circle at 32% 46%,#fff2a8 0 15%,transparent 18%),radial-gradient(circle at 78% 72%,#ff7b00 0 22%,transparent 25%),radial-gradient(circle at 60% 18%,#ff2d6f 0 18%,transparent 21%);
+      background-size:200% 200%;-webkit-background-clip:text;background-clip:text;mix-blend-mode:screen;animation:hero-lava-blobs 6.5s ease-in-out infinite}
+    @keyframes hero-lava-drift{0%,100%{background-position:0% 0%}50%{background-position:100% 100%}}
+    @keyframes hero-lava-blobs{0%,100%{background-position:100% 0%}50%{background-position:0% 100%}}
+    @media(prefers-reduced-motion:reduce){#heroTitle.fx-caustic,#heroTitle.fx-groovy b,#heroTitle.fx-lava,#heroTitle.fx-lava::after{animation:none}}
     .subtitle{color:var(--muted);font-size:14px;margin:15px 0 0}
     .section-title{font-size:17px;font-weight:700;margin:0 0 16px 4px}
     .services{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px}
@@ -63,7 +96,7 @@
       <button class="theme" id="themeToggle" type="button" aria-label="ナイトモードに切り替え" aria-pressed="false" title="テーマを切り替え"><span class="toggle-orb" aria-hidden="true"><svg class="sun-icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"></circle><path d="M12 2v2m0 16v2M4.93 4.93l1.42 1.42m11.3 11.3 1.42 1.42M2 12h2m16 0h2M4.93 19.07l1.42-1.42m11.3-11.3 1.42-1.42"></path></svg><svg class="moon-icon" viewBox="0 0 24 24"><path d="M20.9 13A9 9 0 0 1 11 3.1 9 9 0 1 0 20.9 13Z"></path><path d="M16 3v4m-2-2h4"></path></svg></span></button>
     </header>
     <section class="hero">
-      <h1>くま</h1>
+      <h1 id="heroTitle">くま</h1>
       <p class="subtitle">便利ツールくん</p>
     </section>
     <section>
@@ -95,9 +128,22 @@
         </a>
       </div>
     </section>
-    <footer>© kubearma <span class="version">v26.8</span></footer>
+    <footer>© kubearma <span class="version">v26.9</span></footer>
   </main>
   <script>
+    const title=document.getElementById('heroTitle');
+    const effects=['fx-caustic','fx-groovy','fx-lava'];
+    const previous=sessionStorage.getItem('kubearma_hero_effect');
+    const choices=effects.filter(effect=>effect!==previous);
+    const selected=choices[Math.floor(Math.random()*choices.length)];
+    sessionStorage.setItem('kubearma_hero_effect',selected);
+    title.classList.add(selected);
+    if(selected==='fx-groovy'){
+      title.innerHTML=Array.from('くま').map((char,i)=>'<b aria-hidden="true" style="--i:'+i+'">'+char+'</b>').join('');
+      title.setAttribute('role','img');title.setAttribute('aria-label','くま');
+    }else if(selected==='fx-lava'){
+      title.setAttribute('data-text','くま');
+    }
     const button=document.getElementById('themeToggle');
     const saved=localStorage.getItem('pantaro_theme')||localStorage.getItem('pantaro_portal_theme')||'light';
     if(saved==='dark')document.body.classList.add('dark');
