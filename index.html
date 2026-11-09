@@ -31,6 +31,24 @@
     #heroTitle.fx-blackout::after{bottom:0;transform-origin:right;animation-delay:.28s}
     @keyframes hero-blackout{0%,20%,72%,100%{transform:scaleX(0)}26%,58%{transform:scaleX(1)}64%{transform:scaleX(.38)}}
     @media(prefers-reduced-motion:reduce){#heroTitle.fx-caustic,#heroTitle.fx-groovy b,#heroTitle.fx-lava,#heroTitle.fx-lava::after,#heroTitle.fx-decoder::after,#heroTitle.fx-negative::after,#heroTitle.fx-blackout::before,#heroTitle.fx-blackout::after{animation:none}}
+    /* ⑦ Topographic */
+    #heroTitle.fx-topographic{font:600 clamp(34px,7vw,54px)/1.15 ui-monospace,monospace;letter-spacing:.1em;color:transparent;background:repeating-radial-gradient(ellipse at 30% 55%,var(--text) 0 1px,transparent 1px 7px),repeating-radial-gradient(ellipse at 78% 35%,#4FF8FF 0 1px,transparent 1px 8px);background-size:130px 70px,170px 80px;-webkit-background-clip:text;background-clip:text;filter:drop-shadow(0 0 8px rgba(79,248,255,.25));animation:hero-topographic 5s linear infinite}
+    @keyframes hero-topographic{to{background-position:130px 0,-170px 0}}
+    /* ⑧ Rubber stamp */
+    #heroTitle.fx-stamp{display:inline-block;font:700 clamp(30px,6vw,48px)/1.1 inherit;letter-spacing:.08em;color:#FF4FD8;padding:.12em .24em;border:2px solid #FF4FD8;border-radius:7px;box-shadow:inset 0 0 0 1px rgba(255,79,216,.55);animation:hero-stamp 3.2s cubic-bezier(.22,1.4,.36,1) infinite}
+    @keyframes hero-stamp{0%,6%{transform:rotate(-6deg) scale(2.1);opacity:0;filter:blur(4px)}14%{transform:rotate(-6deg) scale(.96);opacity:1;filter:blur(0)}18%{transform:rotate(-6deg) scale(1.04)}22%,78%{transform:rotate(-6deg) scale(1);opacity:1;filter:blur(0)}94%,100%{transform:rotate(-6deg) scale(1);opacity:0;filter:blur(.6px)}}
+    /* ⑨ Domino */
+    #heroTitle.fx-domino{display:inline-flex;align-items:flex-end;perspective:800px}
+    #heroTitle.fx-domino b{display:inline-block;font-weight:inherit;transform-origin:0% 100%;animation:hero-domino 3.6s linear infinite}
+    #heroTitle.fx-domino b:nth-child(2){animation-delay:.12s}
+    @keyframes hero-domino{0%,12%{transform:rotate(0);color:var(--text);text-shadow:1px 0 #4FF8FF;animation-timing-function:cubic-bezier(.6,.04,.98,.34)}30%{transform:rotate(87deg);color:#FF4FD8;text-shadow:0 0 14px rgba(255,79,216,.6);animation-timing-function:cubic-bezier(.2,.8,.3,1)}35%{transform:rotate(79deg);color:#FF4FD8}42%,64%{transform:rotate(84deg);color:color-mix(in srgb,var(--text) 45%,transparent);text-shadow:none;animation-timing-function:cubic-bezier(.5,-.35,.3,1.45)}86%{transform:rotate(-6deg);color:#4FF8FF;text-shadow:0 0 10px rgba(79,248,255,.45)}94%,100%{transform:rotate(0);color:var(--text);text-shadow:1px 0 #4FF8FF}}
+    /* ⑩ Whiplash */
+    #heroTitle.fx-smear{display:inline-flex}
+    #heroTitle.fx-smear b{display:inline-block;font-weight:inherit;animation:hero-smear 2.9s cubic-bezier(.16,.9,.3,1) infinite}
+    #heroTitle.fx-smear b:nth-child(1){color:#4FF8FF}
+    #heroTitle.fx-smear b:nth-child(2){color:#FF4FD8;animation-delay:.07s}
+    @keyframes hero-smear{0%{transform:translateX(-75px) scale(2.5,.7) skewX(-16deg);filter:blur(5px);opacity:0}17%{transform:translateX(0) scale(1) skewX(0);filter:blur(0);opacity:1}25%{transform:scale(.84,1.14)}33%{transform:scale(1.06,.95)}41%,72%{transform:scale(1);filter:blur(0);opacity:1}92%,100%{transform:translateX(75px) scale(2.5,.7) skewX(16deg);filter:blur(5px);opacity:0}}
+    @media(prefers-reduced-motion:reduce){#heroTitle.fx-topographic,#heroTitle.fx-stamp,#heroTitle.fx-domino b,#heroTitle.fx-smear b{animation:none}}
     .hero-settings{margin:-18px auto 30px;max-width:560px}
     .settings-card{padding:18px 20px;border:1px solid var(--control-border);border-radius:12px;background:var(--panel);box-shadow:var(--shadow);animation:settings-enter .24s ease-out both}
     @keyframes settings-enter{from{opacity:0;transform:translateY(-7px)}to{opacity:1;transform:translateY(0)}}
@@ -155,11 +173,11 @@
         </a>
       </div>
     </section>
-    <footer>© kubearma <span class="version">v26.11</span></footer>
+    <footer>© kubearma <span class="version">v26.12</span></footer>
   </main>
   <script>
     const title=document.getElementById('heroTitle');
-    const effects=['fx-caustic','fx-groovy','fx-lava','fx-decoder','fx-negative','fx-blackout'];
+    const effects=['fx-caustic','fx-groovy','fx-lava','fx-decoder','fx-negative','fx-blackout','fx-topographic','fx-stamp','fx-domino','fx-smear'];
     const effectsEnabled=document.getElementById('effectsEnabled');
     const settingsPanel=document.getElementById('heroSettings');
     const settingsButton=document.getElementById('settingsToggle');
@@ -180,6 +198,9 @@
       }else if(selected==='fx-lava'||selected==='fx-blackout'){
         title.setAttribute('data-text','くま');
       }else if(selected==='fx-decoder'){
+        title.setAttribute('role','img');title.setAttribute('aria-label','くま');
+      }else if(selected==='fx-domino'||selected==='fx-smear'){
+        title.innerHTML=Array.from('くま').map((char,i)=>'<b aria-hidden="true" style="--i:'+i+'">'+char+'</b>').join('');
         title.setAttribute('role','img');title.setAttribute('aria-label','くま');
       }
     }
