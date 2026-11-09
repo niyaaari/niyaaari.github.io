@@ -19,8 +19,8 @@
 
     .settings-toggle{width:32px;height:32px;display:grid;place-items:center;flex:none;border:1px solid var(--control-border);border-radius:50%;background:var(--theme-button);color:var(--text);cursor:pointer;transition:background-color .28s ease,color .28s ease,border-color .28s ease,transform .2s ease}.settings-toggle:active{transform:scale(.92)}.settings-toggle svg{width:16px;height:16px;display:block}
     .header-actions{display:flex;align-items:center;gap:8px}
-    #heroTitle.fx-decoder{color:var(--text);font-family:ui-monospace,monospace;letter-spacing:.08em}
-    #heroTitle.fx-decoder::after{content:"▓K#R1&Q";color:#4ff8ff;animation:hero-decoder 4s steps(1) infinite}
+    #heroTitle.fx-decoder{color:transparent;font-family:ui-monospace,monospace;letter-spacing:.08em}
+    #heroTitle.fx-decoder::after{content:"▓K#R1&Q";position:absolute;inset:0;display:block;white-space:nowrap;text-align:center;color:#4ff8ff;animation:hero-decoder 4s steps(1) infinite}
     @keyframes hero-decoder{0%{content:"▓K#R1&Q";color:#4ff8ff}8%{content:"く#R1▒"}16%{content:"くま☰"}24%,40%,82%{content:"くま";color:var(--text)}88%{content:"く#*";color:#4ff8ff}94%{content:"▒#R1";color:#4ff8ff}}
     #heroTitle.fx-negative{color:var(--text);padding:.12em .2em}
     #heroTitle.fx-negative::after{content:"";position:absolute;top:0;bottom:0;left:0;width:34%;background:var(--text);mix-blend-mode:difference;animation:hero-negative 2.4s ease-in-out infinite alternate}
@@ -155,7 +155,7 @@
         </a>
       </div>
     </section>
-    <footer>© kubearma <span class="version">v26.10</span></footer>
+    <footer>© kubearma <span class="version">v26.11</span></footer>
   </main>
   <script>
     const title=document.getElementById('heroTitle');
