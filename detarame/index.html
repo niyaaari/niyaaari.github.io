@@ -14,9 +14,8 @@
 *{box-sizing:border-box}
 body{margin:0;min-height:100vh;padding:24px 16px 42px;background:var(--bg);color:var(--ink);font-family:GenEi,"Yu Gothic",sans-serif;transition:background .25s,color .25s}
 main{width:min(760px,100%);margin:auto}
-.topbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:28px}
-.brand{display:inline-flex;align-items:center;gap:6px;color:inherit;text-decoration:none;font-size:14px;font-weight:700;letter-spacing:.04em}
-.brand svg{width:17px;height:17px}
+.topbar{position:relative;left:50%;width:min(920px,calc(100vw - 32px));transform:translateX(-50%);display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:24px}
+.topbar>.eyebrow{font-size:14px;font-weight:700;letter-spacing:.04em;color:var(--ink)}.brand-mark{display:block;width:17px;height:17px;flex:none}
 .theme-toggle{width:32px;height:32px;border:1px solid var(--line);border-radius:50%;background:var(--panel);color:var(--ink);display:grid;place-items:center;cursor:pointer;transition:transform .2s,background .25s}
 .theme-toggle:active{transform:scale(.92)}.theme-toggle svg{width:16px;height:16px}
 h1{font-size:clamp(28px,6vw,36px);text-align:center;margin:0;font-weight:700;letter-spacing:.06em}
@@ -64,7 +63,7 @@ footer{text-align:center;color:var(--muted);font-size:11px;margin-top:36px}
 <body>
 <main>
 <header class="topbar">
-<a class="brand" href="https://niyaaari.github.io/"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M8.58 9.99a.27.27 0 0 0-.29-.36l-5.06.72a.27.27 0 0 0-.16.46l3.6 3.72a.27.27 0 0 0 .45-.11zM6.75 20.39a.27.27 0 0 0 .37.32l4.73-2.24a.27.27 0 0 1 .22 0l4.94 2.24a.27.27 0 0 0 .36-.33c-.93-2.81-1.77-5.58-2.67-8.38a.27.27 0 0 0-.48-.06l-2 3.58a.27.27 0 0 1-.23.14h-.09a.26.26 0 0 1-.23-.15z"/></svg>くま</a>
+<a class="eyebrow brand-link" href="https://niyaaari.github.io/" style="text-decoration:none;display:inline-flex;align-items:center;gap:7px"><svg class="brand-mark" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M8.581 9.986a.27.27 0 0 0-.291-.355l-5.055.72a.27.27 0 0 0-.229.326a.27.27 0 0 0 .07.13l3.6 3.716a.266.266 0 0 0 .378.013a.3.3 0 0 0 .071-.12zM6.745 20.393a.265.265 0 0 0 .376.317l4.727-2.244a.27.27 0 0 1 .222 0l4.94 2.24a.27.27 0 0 0 .365-.334c-.932-2.806-1.774-5.58-2.674-8.38a.265.265 0 0 0-.476-.053l-1.996 3.578a.27.27 0 0 1-.238.138h-.085a.26.26 0 0 1-.232-.143L9.736 11.95a.27.27 0 0 0-.233-.143h-.026a.265.265 0 0 0-.26.19a244 244 0 0 0-2.472 8.396m10.093-6.056a.264.264 0 0 0 .445.106l3.636-3.636a.271.271 0 0 0-.153-.461l-5.029-.704a.27.27 0 0 0-.296.35z"/><path fill="currentColor" d="M14.024 9.551a.32.32 0 0 0 0-.248l-.027-.064l-1.784-5.78a.265.265 0 0 0-.513 0l-1.747 5.78l-.026.085a.3.3 0 0 0 .01.201l1.731 3.991a.28.28 0 0 0 .244.16h.063a.27.27 0 0 0 .244-.16l1.8-3.965z"/></svg><span>kubearma</span></a>
 <button class="theme-toggle" id="themeToggle" aria-label="テーマを切り替え"><svg id="themeIcon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M4.93 4.93l1.42 1.42m11.3 11.3 1.42 1.42M2 12h2m16 0h2M4.93 19.07l1.42-1.42m11.3-11.3 1.42-1.42"/></svg></button>
 </header>
 <h1>でたらめくん</h1>
@@ -102,14 +101,14 @@ const lane=document.getElementById('lane'),comboEl=document.getElementById('comb
 const startControls=document.getElementById('startControls'),result=document.getElementById('result');
 const startButton=document.getElementById('startButton'),retryButton=document.getElementById('retryButton');
 const donButton=document.getElementById('donButton'),kaButton=document.getElementById('kaButton');
-let running=false,combo=0,notes=[],spawnTimer=null,raf=0,lastFrame=0,lastSpawn=0,interval=260,travel=1600,gameStart=0;
+let running=false,combo=0,notes=[],spawnTimer=null,raf=0,lastFrame=0,lastSpawn=0,interval=130,travel=1600,gameStart=0;
 const HIT_WINDOW=125;
 function setMessage(text){message.textContent=text}
 function clearNotes(){notes.forEach(n=>n.el.remove());notes=[]}
 function reset(){running=false;cancelAnimationFrame(raf);clearTimeout(spawnTimer);clearNotes();combo=0;comboEl.textContent='0';result.classList.remove('show');startControls.hidden=false;setMessage('スタートすると音符が流れ始めるよ。')}
-function start(){reset();running=true;startControls.hidden=true;result.classList.remove('show');combo=0;comboEl.textContent='0';interval=260;travel=1600;gameStart=performance.now();lastSpawn=gameStart;lastFrame=gameStart;setMessage('');spawnNote(gameStart);raf=requestAnimationFrame(frame)}
+function start(){reset();running=true;startControls.hidden=true;result.classList.remove('show');combo=0;comboEl.textContent='0';interval=130;travel=1600;gameStart=performance.now();lastSpawn=gameStart;lastFrame=gameStart;setMessage('');spawnNote(gameStart);raf=requestAnimationFrame(frame)}
 function spawnNote(now){const type=Math.random()<.5?'don':'ka';const el=document.createElement('span');el.className='note '+type;lane.appendChild(el);notes.push({type,el,born:now,hit:false});}
-function frame(now){if(!running)return;const elapsed=now-gameStart;const progress=Math.min(1,elapsed/75000);const currentTravel=Math.max(520,travel-progress*1080);const currentInterval=Math.max(70,interval-progress*190);
+function frame(now){if(!running)return;const elapsed=now-gameStart;const progress=Math.min(1,elapsed/75000);const currentTravel=Math.max(520,travel-progress*1080);const currentInterval=Math.max(38,interval-progress*92);
 if(now-lastSpawn>=currentInterval){spawnNote(now);lastSpawn=now}
 const lineX=lane.clientWidth*.19;const width=lane.clientWidth;
 for(const n of notes){const age=now-n.born;const x=width+10-(age/currentTravel)*(width-lineX+18);n.el.style.left=x+'px';if(!n.hit&&age>currentTravel+HIT_WINDOW){finish(false,'音符を見逃した！');return}}
