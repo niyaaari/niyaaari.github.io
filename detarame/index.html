@@ -12,7 +12,7 @@
 :root{color-scheme:light;--bg:#E9E2D0;--ink:#6C4732;--muted:#806a5c;--panel:rgba(255,255,255,.24);--line:rgba(108,71,50,.25);--accent:#6C4732;--deco:#6C4732;--red:#df5555;--blue:#438edb;--shadow:none}
 :root[data-theme="dark"]{color-scheme:dark;--bg:#171b25;--ink:#e7e9ee;--muted:#a5aab5;--panel:rgba(43,46,56,.76);--line:rgba(255,255,255,.12);--accent:#91aaff;--deco:#596170;--shadow:0 14px 38px rgba(0,0,0,.22)}
 *{box-sizing:border-box}
-body{margin:0;min-height:100vh;padding:24px 16px 32px;background:var(--bg);color:var(--ink);font-family:GenEi,"Yu Gothic",sans-serif;transition:background .25s,color .25s}
+body{margin:0;min-height:100vh;padding:24px 16px 195px;background:var(--bg);color:var(--ink);font-family:GenEi,"Yu Gothic",sans-serif;transition:background .25s,color .25s}
 main{width:min(760px,100%);margin:auto}
 .topbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:28px}
 .brand{display:inline-flex;align-items:center;gap:6px;color:inherit;text-decoration:none;font-size:14px;font-weight:700;letter-spacing:.04em}
@@ -35,15 +35,17 @@ h1{font-size:clamp(28px,6vw,36px);text-align:center;margin:0;font-weight:700;let
 .note{position:absolute;top:50%;width:27px;height:27px;border-radius:50%;transform:translate(-50%,-50%);box-shadow:inset 0 2px 3px #ffffff55,0 2px 5px #0002}
 .note.don{background:var(--red)}.note.ka{background:var(--blue)}
 .lane-hint{position:absolute;right:10px;bottom:7px;font-size:10px;color:var(--muted)}
-.drum-area{display:flex;justify-content:center;padding:4px 0 2px}
-.drum{width:min(290px,78vw);aspect-ratio:1;border-radius:50%;border:7px solid color-mix(in srgb,var(--ink) 88%,#000);background:color-mix(in srgb,var(--bg) 86%,white);box-shadow:inset 0 0 0 5px color-mix(in srgb,var(--ink) 12%,transparent),0 8px 18px #0002;display:grid;grid-template-columns:1fr 1fr;overflow:hidden;position:relative;touch-action:manipulation;user-select:none}
-:root[data-theme="dark"] .drum{background:#252b38;border-color:#aeb4c0}
-.drum-hit{border:0;background:transparent;color:var(--ink);font:inherit;font-size:clamp(18px,5vw,24px);font-weight:700;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:8px;cursor:pointer;transition:background .12s,transform .12s}
-.drum-hit+ .drum-hit{border-left:2px dashed color-mix(in srgb,var(--ink) 22%,transparent)}
-.drum-hit:active,.drum-hit.pressed{background:color-mix(in srgb,var(--ink) 12%,transparent);transform:scale(.97)}
-.drum-hit small{font-size:11px;color:var(--muted);font-weight:500}
-.drum-hit.don{color:var(--red)}.drum-hit.ka{color:var(--blue)}
+.drum-area{position:fixed;z-index:20;left:0;right:0;bottom:0;height:178px;pointer-events:none;touch-action:manipulation;user-select:none}
+.drum-ka{position:absolute;inset:0;border:0;background:transparent;color:var(--blue);font:inherit;font-size:13px;font-weight:700;pointer-events:auto;cursor:pointer}
+.drum-ka:active,.drum-ka.pressed{background:color-mix(in srgb,var(--blue) 10%,transparent)}
+.drum-ka-label{position:absolute;bottom:25px;left:calc(50% - min(38vw,165px) - 42px);transform:translateX(-50%);white-space:nowrap}
+.drum-don{position:absolute;bottom:0;left:50%;transform:translateX(-50%);width:min(76vw,330px);height:165px;border:6px solid color-mix(in srgb,var(--ink) 88%,#000);border-bottom:0;border-radius:100% 100% 0 0 / 100% 100% 0 0;background:color-mix(in srgb,var(--bg) 86%,white);box-shadow:inset 0 0 0 5px color-mix(in srgb,var(--ink) 12%,transparent),0 -5px 18px #0002;color:var(--red);font:inherit;font-size:clamp(20px,5vw,25px);font-weight:700;display:flex;align-items:center;justify-content:center;padding-top:48px;pointer-events:auto;cursor:pointer;touch-action:manipulation;transition:background .12s}
+:root[data-theme="dark"] .drum-don{background:#252b38;border-color:#aeb4c0}
+.drum-don:active,.drum-don.pressed{background:color-mix(in srgb,var(--red) 16%,var(--bg))}
+.drum-don small{display:block;font-size:11px;color:var(--muted);font-weight:500;margin-top:5px}
+.drum-don span{display:flex;flex-direction:column;align-items:center}
 .drum-caption{text-align:center;color:var(--muted);font-size:11px;margin-top:12px}
+@media(max-width:420px){.drum-area{height:150px}.drum-don{height:142px;width:min(78vw,300px);border-width:5px;padding-top:42px}.drum-ka-label{bottom:19px;left:calc(50% - min(39vw,150px) - 34px)}}
 .controls{display:flex;justify-content:center;gap:9px;flex-wrap:wrap;margin-top:20px}
 .action{border:1px solid var(--line);border-radius:10px;padding:12px 22px;background:var(--panel);color:var(--ink);font:inherit;font-size:14px;font-weight:700;cursor:pointer;transition:transform .15s,background .2s}
 .action:active{transform:scale(.97)}.action.primary{background:var(--accent);border-color:var(--accent);color:#fff;min-width:160px}
@@ -55,7 +57,7 @@ h1{font-size:clamp(28px,6vw,36px);text-align:center;margin:0;font-weight:700;let
 .keycap{display:inline-block;min-width:23px;padding:1px 5px;border:1px solid var(--line);border-radius:5px;background:var(--panel);color:var(--ink);font-size:10px;font-weight:700}
 footer{text-align:center;color:var(--muted);font-size:11px;margin-top:36px}
 @keyframes reveal{from{opacity:0;transform:translateY(7px)}to{opacity:1;transform:translateY(0)}}
-@media(max-width:420px){body{padding:18px 14px 26px}.game-card{padding:18px 12px}.lane-wrap{height:88px}.drum{border-width:6px}}
+@media(max-width:420px){body{padding:18px 14px 170px}.game-card{padding:18px 12px}.lane-wrap{height:88px}.drum{border-width:6px}}
 @media(prefers-reduced-motion:reduce){*,*::before,*::after{transition:none!important;animation:none!important}}
 </style>
 </head>
@@ -73,11 +75,9 @@ footer{text-align:center;color:var(--muted);font-size:11px;margin-top:36px}
 <div class="lane" id="lane"><span class="judge-label">判定</span><span class="judge-line"></span></div>
 <span class="lane-hint">← 音符が流れてくる</span>
 </div>
-<div class="drum-area">
-<div class="drum" aria-label="太鼓">
-<button class="drum-hit don" id="donButton" type="button"><span>ドン</span><small>F / J</small></button>
-<button class="drum-hit ka" id="kaButton" type="button"><span>カッ</span><small>D / K</small></button>
-</div>
+<div class="drum-area" aria-label="太鼓の操作エリア">
+<button class="drum-ka" id="kaButton" type="button" aria-label="カッ"><span class="drum-ka-label">カッ · D / K</span></button>
+<button class="drum-don" id="donButton" type="button" aria-label="ドン"><span>ドン<small>F / J</small></span></button>
 </div>
 <div class="drum-caption">赤い音符はドン、青い音符はカッ</div>
 <div class="controls" id="startControls"><button class="action primary" id="startButton">ゲームスタート</button></div>
@@ -102,20 +102,20 @@ const lane=document.getElementById('lane'),comboEl=document.getElementById('comb
 const startControls=document.getElementById('startControls'),result=document.getElementById('result');
 const startButton=document.getElementById('startButton'),retryButton=document.getElementById('retryButton');
 const donButton=document.getElementById('donButton'),kaButton=document.getElementById('kaButton');
-let running=false,combo=0,notes=[],spawnTimer=null,raf=0,lastFrame=0,lastSpawn=0,interval=330,travel=1900,gameStart=0;
+let running=false,combo=0,notes=[],spawnTimer=null,raf=0,lastFrame=0,lastSpawn=0,interval=260,travel=1600,gameStart=0;
 const HIT_WINDOW=125;
 function setMessage(text){message.textContent=text}
 function clearNotes(){notes.forEach(n=>n.el.remove());notes=[]}
 function reset(){running=false;cancelAnimationFrame(raf);clearTimeout(spawnTimer);clearNotes();combo=0;comboEl.textContent='0';result.classList.remove('show');startControls.hidden=false;setMessage('スタートすると音符が流れ始めるよ。')}
-function start(){reset();running=true;startControls.hidden=true;result.classList.remove('show');combo=0;comboEl.textContent='0';interval=330;travel=1900;gameStart=performance.now();lastSpawn=gameStart;lastFrame=gameStart;setMessage('');spawnNote(gameStart);raf=requestAnimationFrame(frame)}
+function start(){reset();running=true;startControls.hidden=true;result.classList.remove('show');combo=0;comboEl.textContent='0';interval=260;travel=1600;gameStart=performance.now();lastSpawn=gameStart;lastFrame=gameStart;setMessage('');spawnNote(gameStart);raf=requestAnimationFrame(frame)}
 function spawnNote(now){const type=Math.random()<.5?'don':'ka';const el=document.createElement('span');el.className='note '+type;lane.appendChild(el);notes.push({type,el,born:now,hit:false});}
-function frame(now){if(!running)return;const elapsed=now-gameStart;const progress=Math.min(1,elapsed/90000);const currentTravel=Math.max(1050,travel-progress*620);const currentInterval=Math.max(125,interval-progress*155);
+function frame(now){if(!running)return;const elapsed=now-gameStart;const progress=Math.min(1,elapsed/75000);const currentTravel=Math.max(520,travel-progress*1080);const currentInterval=Math.max(70,interval-progress*190);
 if(now-lastSpawn>=currentInterval){spawnNote(now);lastSpawn=now}
 const lineX=lane.clientWidth*.19;const width=lane.clientWidth;
 for(const n of notes){const age=now-n.born;const x=width+10-(age/currentTravel)*(width-lineX+18);n.el.style.left=x+'px';if(!n.hit&&age>currentTravel+HIT_WINDOW){finish(false,'音符を見逃した！');return}}
 notes=notes.filter(n=>{if(n.hit){n.el.remove();return false}return true});
 raf=requestAnimationFrame(frame)}
-function hit(type){if(!running)return;const now=performance.now();const travelNow=Math.max(1050,travel-Math.min(1,(now-gameStart)/90000)*620);const lineX=lane.clientWidth*.19;const width=lane.clientWidth;
+function hit(type){if(!running)return;const now=performance.now();const travelNow=Math.max(520,travel-Math.min(1,(now-gameStart)/75000)*1080);const lineX=lane.clientWidth*.19;const width=lane.clientWidth;
 let candidate=null,best=Infinity;
 for(const n of notes){if(n.hit)continue;const age=now-n.born;const x=width+10-(age/travelNow)*(width-lineX+18);const distance=Math.abs(x-lineX);if(distance<best){best=distance;candidate=n}}
 if(!candidate||best>Math.max(24,lane.clientWidth*.055)||candidate.type!==type){finish(false,candidate&&best<=Math.max(24,lane.clientWidth*.055)?'違う種類の音符を叩いた！':'タイミングが合わなかった！');return}
