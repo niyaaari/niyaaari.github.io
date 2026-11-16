@@ -29,7 +29,7 @@ h1{font-size:clamp(28px,6vw,36px);text-align:center;margin:0;font-weight:700;let
 .score{font-size:34px;font-weight:700;font-variant-numeric:tabular-nums;line-height:1}
 .lane-wrap{position:relative;height:100px;margin:0 0 18px;overflow:hidden;border-radius:12px;background:var(--panel);border:1px solid var(--line)}
 .lane{position:absolute;inset:0}
-.judge-line{position:absolute;left:19%;top:10px;bottom:10px;width:4px;border-radius:5px;background:var(--accent);box-shadow:0 0 0 4px color-mix(in srgb,var(--accent) 12%,transparent)}
+.judge-line{position:absolute;left:19%;top:50%;width:25px;height:25px;transform:translate(-50%,-50%);border:4px solid var(--accent);border-radius:50%;background:var(--panel);box-shadow:0 0 0 4px color-mix(in srgb,var(--accent) 12%,transparent)}
 .judge-label{position:absolute;left:19%;top:4px;transform:translateX(-50%);font-size:10px;color:var(--muted);z-index:2}
 .note{position:absolute;top:50%;width:27px;height:27px;border-radius:50%;transform:translate(-50%,-50%);box-shadow:inset 0 2px 3px #ffffff55,0 2px 5px #0002}
 .note.don{background:var(--red)}.note.ka{background:var(--blue)}
@@ -102,7 +102,7 @@ const startControls=document.getElementById('startControls'),result=document.get
 const startButton=document.getElementById('startButton'),retryButton=document.getElementById('retryButton');
 const donButton=document.getElementById('donButton'),kaButton=document.getElementById('kaButton');
 let running=false,combo=0,notes=[],spawnTimer=null,raf=0,lastFrame=0,lastSpawn=0,interval=130,travel=1600,gameStart=0;
-const HIT_WINDOW=125;
+const HIT_WINDOW=91;
 function setMessage(text){message.textContent=text}
 function clearNotes(){notes.forEach(n=>n.el.remove());notes=[]}
 function reset(){running=false;cancelAnimationFrame(raf);clearTimeout(spawnTimer);clearNotes();combo=0;comboEl.textContent='0';result.classList.remove('show');startControls.hidden=false;setMessage('スタートすると音符が流れ始めるよ。')}
@@ -114,10 +114,10 @@ const lineX=lane.clientWidth*.19;const width=lane.clientWidth;
 for(const n of notes){const age=now-n.born;const x=width+10-(age/currentTravel)*(width-lineX+18);n.el.style.left=x+'px';if(!n.hit&&age>currentTravel+HIT_WINDOW){finish(false,'音符を見逃した！');return}}
 notes=notes.filter(n=>{if(n.hit){n.el.remove();return false}return true});
 raf=requestAnimationFrame(frame)}
-function hit(type){if(!running)return;const now=performance.now();const travelNow=Math.max(520,travel-Math.min(1,(now-gameStart)/75000)*1080);const lineX=lane.clientWidth*.19;const width=lane.clientWidth;
+function hit(type){if(!running)return;const now=performance.now();const travelNow=Math.max(520,travel-Math.min(1,(now-gameStart)/75000)*1080);
 let candidate=null,best=Infinity;
-for(const n of notes){if(n.hit)continue;const age=now-n.born;const x=width+10-(age/travelNow)*(width-lineX+18);const distance=Math.abs(x-lineX);if(distance<best){best=distance;candidate=n}}
-if(!candidate||best>Math.max(24,lane.clientWidth*.055)||candidate.type!==type){finish(false,candidate&&best<=Math.max(24,lane.clientWidth*.055)?'違う種類の音符を叩いた！':'タイミングが合わなかった！');return}
+for(const n of notes){if(n.hit)continue;const age=now-n.born;const timingError=Math.abs(age-travelNow);if(timingError<best){best=timingError;candidate=n}}
+if(!candidate||best>HIT_WINDOW||candidate.type!==type){finish(false,candidate&&best<=HIT_WINDOW?'違う種類の音符を叩いた！':'タイミングが合わなかった！');return}
 candidate.hit=true;combo++;comboEl.textContent=String(combo);const button=type==='don'?donButton:kaButton;button.classList.add('pressed');setTimeout(()=>button.classList.remove('pressed'),90)}
 function finish(success,reason){if(!running)return;running=false;cancelAnimationFrame(raf);clearTimeout(spawnTimer);clearNotes();document.getElementById('finalScore').textContent=String(combo);startControls.hidden=true;result.classList.add('show');setMessage(reason||'ゲーム終了！');}
 function press(type){hit(type)}
