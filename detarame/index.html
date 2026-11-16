@@ -29,6 +29,7 @@ h1{font-size:clamp(28px,6vw,36px);text-align:center;margin:0;font-weight:700;let
 .score{font-size:34px;font-weight:700;font-variant-numeric:tabular-nums;line-height:1}
 .lane-wrap{position:relative;height:100px;margin:0 0 18px;overflow:hidden;border-radius:12px;background:var(--panel);border:1px solid var(--line)}
 .lane{position:absolute;inset:0}
+.judgement-feedback{position:absolute;left:19%;top:50%;z-index:4;transform:translate(-50%,-50%);font-size:22px;font-weight:800;letter-spacing:.08em;color:var(--accent);text-shadow:0 1px 5px color-mix(in srgb,var(--bg) 80%,transparent);pointer-events:none;opacity:0}.judgement-feedback.show{animation:judgePop .48s ease both}@keyframes judgePop{0%{opacity:0;transform:translate(-50%,-35%) scale(.8)}18%{opacity:1;transform:translate(-50%,-50%) scale(1.12)}75%{opacity:1}100%{opacity:0;transform:translate(-50%,-68%) scale(1)}}
 .judge-line{position:absolute;left:19%;top:50%;width:25px;height:25px;transform:translate(-50%,-50%);border:4px solid var(--accent);border-radius:50%;background:var(--panel);box-shadow:0 0 0 4px color-mix(in srgb,var(--accent) 12%,transparent)}
 .judge-label{position:absolute;left:19%;top:4px;transform:translateX(-50%);font-size:10px;color:var(--muted);z-index:2}
 .note{position:absolute;top:50%;width:27px;height:27px;border-radius:50%;transform:translate(-50%,-50%);box-shadow:inset 0 2px 3px #ffffff55,0 2px 5px #0002}
@@ -71,7 +72,7 @@ footer{text-align:center;color:var(--muted);font-size:11px;margin-top:36px}
 <section class="game-card">
 <div class="score-row"><span class="score-label">COMBO</span><span class="score" id="combo">0</span></div>
 <div class="lane-wrap" id="laneWrap" aria-label="音符レーン">
-<div class="lane" id="lane"><span class="judge-label">判定</span><span class="judge-line"></span></div>
+<div class="lane" id="lane"><span class="judge-label">判定</span><span class="judge-line"></span><span class="judgement-feedback" id="judgementFeedback" aria-live="polite"></span></div>
 <span class="lane-hint">← 音符が流れてくる</span>
 </div>
 <div class="drum-area" aria-label="太鼓の操作エリア">
@@ -97,6 +98,7 @@ if(savedTheme==='dark')root.dataset.theme='dark';
 function updateThemeIcon(){const dark=root.dataset.theme==='dark';themeButton.setAttribute('aria-pressed',String(dark));themeButton.innerHTML=dark?'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><path d="M20.5 15.5A8.5 8.5 0 0 1 8.5 3.5 8.5 8.5 0 1 0 20.5 15.5Z"/></svg>':'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M4.93 4.93l1.42 1.42m11.3 11.3 1.42 1.42M2 12h2m16 0h2M4.93 19.07l1.42-1.42m11.3-11.3 1.42-1.42"/></svg>'}
 updateThemeIcon();
 themeButton.addEventListener('click',()=>{root.dataset.theme=root.dataset.theme==='dark'?'light':'dark';localStorage.setItem('pantaro_theme',root.dataset.theme);updateThemeIcon()});
+const judgementFeedback=document.getElementById('judgementFeedback');let judgementTimer=null;
 const lane=document.getElementById('lane'),comboEl=document.getElementById('combo'),message=document.getElementById('message');
 const startControls=document.getElementById('startControls'),result=document.getElementById('result');
 const startButton=document.getElementById('startButton'),retryButton=document.getElementById('retryButton');
@@ -105,7 +107,7 @@ let running=false,combo=0,notes=[],spawnTimer=null,raf=0,lastFrame=0,lastSpawn=0
 const HIT_WINDOW=91;
 function setMessage(text){message.textContent=text}
 function clearNotes(){notes.forEach(n=>n.el.remove());notes=[]}
-function reset(){running=false;cancelAnimationFrame(raf);clearTimeout(spawnTimer);clearNotes();combo=0;comboEl.textContent='0';result.classList.remove('show');startControls.hidden=false;setMessage('スタートすると音符が流れ始めるよ。')}
+function reset(){running=false;clearTimeout(judgementTimer);judgementFeedback.textContent='';judgementFeedback.className='judgement-feedback';cancelAnimationFrame(raf);clearTimeout(spawnTimer);clearNotes();combo=0;comboEl.textContent='0';result.classList.remove('show');startControls.hidden=false;setMessage('スタートすると音符が流れ始めるよ。')}
 function start(){reset();running=true;startControls.hidden=true;result.classList.remove('show');combo=0;comboEl.textContent='0';interval=130;travel=1600;gameStart=performance.now();lastSpawn=gameStart;lastFrame=gameStart;setMessage('');spawnNote(gameStart);raf=requestAnimationFrame(frame)}
 function spawnNote(now){const type=Math.random()<.5?'don':'ka';const el=document.createElement('span');el.className='note '+type;lane.appendChild(el);notes.push({type,el,born:now,hit:false});}
 function frame(now){if(!running)return;const elapsed=now-gameStart;const progress=Math.min(1,elapsed/75000);const currentTravel=Math.max(520,travel-progress*1080);const currentInterval=Math.max(38,interval-progress*92);
@@ -118,7 +120,7 @@ function hit(type){if(!running)return;const now=performance.now();const travelNo
 let candidate=null,best=Infinity;
 for(const n of notes){if(n.hit)continue;const age=now-n.born;const timingError=Math.abs(age-travelNow);if(timingError<best){best=timingError;candidate=n}}
 if(!candidate||best>HIT_WINDOW||candidate.type!==type){finish(false,candidate&&best<=HIT_WINDOW?'違う種類の音符を叩いた！':'タイミングが合わなかった！');return}
-candidate.hit=true;combo++;comboEl.textContent=String(combo);const button=type==='don'?donButton:kaButton;button.classList.add('pressed');setTimeout(()=>button.classList.remove('pressed'),90)}
+candidate.hit=true;combo++;comboEl.textContent=String(combo);clearTimeout(judgementTimer);judgementFeedback.textContent=best<=75?'良':'可';judgementFeedback.className='judgement-feedback';void judgementFeedback.offsetWidth;judgementFeedback.classList.add('show');judgementTimer=setTimeout(()=>{judgementFeedback.className='judgement-feedback';judgementFeedback.textContent=''},480);const button=type==='don'?donButton:kaButton;button.classList.add('pressed');setTimeout(()=>button.classList.remove('pressed'),90)}
 function finish(success,reason){if(!running)return;running=false;cancelAnimationFrame(raf);clearTimeout(spawnTimer);clearNotes();document.getElementById('finalScore').textContent=String(combo);startControls.hidden=true;result.classList.add('show');setMessage(reason||'ゲーム終了！');}
 function press(type){hit(type)}
 donButton.addEventListener('pointerdown',e=>{e.preventDefault();press('don')});
