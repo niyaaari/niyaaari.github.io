@@ -1,0 +1,145 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#E9E2D0">
+<meta name="description" content="複数の画像を自由に並べて、1枚の画像として保存できるツールです。">
+<meta property="og:title" content="画像並べくん | kubearma">
+<meta property="og:description" content="画像を並べて、1枚の画像にまとめよう。">
+<title>画像並べくん | kubearma</title>
+<style>
+@font-face{font-family:GenEi;src:url("https://raw.githubusercontent.com/niyaaari/part-time-pay-calculator/main/fonts/GenEiMGothic2-Regular.ttf") format("truetype");font-weight:400;font-display:swap}
+@font-face{font-family:GenEi;src:url("https://raw.githubusercontent.com/niyaaari/part-time-pay-calculator/main/fonts/GenEiMGothic2-Medium.ttf") format("truetype");font-weight:500;font-display:swap}
+@font-face{font-family:GenEi;src:url("https://raw.githubusercontent.com/niyaaari/part-time-pay-calculator/main/fonts/GenEiMGothic2-Bold.ttf") format("truetype");font-weight:700;font-display:swap}
+:root{color-scheme:light;--bg:#E9E2D0;--ink:#6C4732;--muted:#806a5c;--line:rgba(108,71,50,.22);--accent:#6C4732;--input:rgba(255,255,255,.58);--theme-button:rgba(255,255,255,.24);--control-border:rgba(108,71,50,.38);--deco:#6C4732;--soft:rgba(108,71,50,.1)}
+:root[data-theme="dark"]{color-scheme:dark;--bg:#171b25;--ink:#e7e9ee;--muted:#a5aab5;--accent:#91aaff;--input:rgba(30,34,43,.7);--theme-button:rgba(43,46,56,.76);--control-border:rgba(255,255,255,.2);--deco:#596170;--line:rgba(255,255,255,.12);--soft:rgba(145,170,255,.12)}
+*{box-sizing:border-box}body{margin:0;min-height:100vh;padding:30px 15px 42px;color:var(--ink);font-family:GenEi,system-ui,sans-serif;background:var(--bg);transition:background .28s,color .28s}
+main{max-width:760px;margin:auto}.topbar{position:relative;left:50%;width:min(920px,calc(100vw - 32px));transform:translateX(-50%);display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:24px}
+.brand{display:inline-flex;align-items:center;gap:6px;font-size:14px;font-weight:700;letter-spacing:.04em;color:inherit;text-decoration:none}.brand-mark{width:17px;height:17px;flex:none}
+.theme-toggle{display:grid;place-items:center;width:32px;height:32px;padding:0;border:1px solid var(--control-border);border-radius:50%;background:var(--theme-button);color:var(--ink);cursor:pointer;transition:background .5s,border-color .5s,color .5s,transform .25s}.theme-toggle:active{transform:scale(.92)}.theme-toggle svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:1.65;stroke-linecap:round;stroke-linejoin:round}
+h1{font-size:30px;margin:7px 0}.sub,.hint{color:var(--muted);font-size:13px;line-height:1.8}.sub{margin:0 0 22px}
+.card{position:relative;isolation:isolate;margin:13px 0;padding:19px;background:transparent;transition:background-color .3s,transform .3s}.card:before,.card:after{content:"";position:absolute;z-index:0;pointer-events:none;transition:all .32s}.card:before{top:-6px;bottom:-6px;left:0;right:0;border-left:2px solid var(--deco);border-right:2px solid var(--deco)}.card:after{top:0;bottom:0;left:-6px;right:-6px;border-top:2px solid var(--deco);border-bottom:2px solid var(--deco)}.card>*{position:relative;z-index:1}
+h2{font-size:16px;margin:0 0 15px}.section-note{font-size:12px;color:var(--muted);margin:-8px 0 14px}
+button,select,input{font:inherit}button{cursor:pointer}.btn{border:1px solid var(--control-border);border-radius:9px;background:var(--input);color:var(--ink);padding:9px 13px;font-size:13px;font-weight:700;transition:transform .15s,background .2s}.btn:active{transform:scale(.97)}.btn.primary{border-color:var(--accent);background:var(--accent);color:white}.btn.danger{color:#c34b50}.btn:disabled{opacity:.4;cursor:not-allowed}
+.upload{display:flex;align-items:center;justify-content:center;gap:9px;min-height:105px;padding:20px;border:1.5px dashed var(--control-border);border-radius:12px;background:var(--input);text-align:center;cursor:pointer;transition:border-color .2s,background .2s}.upload.dragover{border-color:var(--accent);background:var(--soft)}.upload strong{display:block;font-size:14px}.upload small{display:block;color:var(--muted);font-size:11px;margin-top:5px}.upload input{display:none}
+.toolbar{display:flex;flex-wrap:wrap;gap:8px;align-items:center}.field{display:flex;align-items:center;gap:8px;min-width:0;font-size:13px;color:var(--muted)}.field select,.field input[type=color],.field input[type=number]{border:1px solid var(--control-border);border-radius:8px;background:var(--input);color:var(--ink);padding:8px;min-width:0}.field select{max-width:100%}.field input[type=number]{width:76px}.field input[type=color]{width:42px;height:36px;padding:3px}
+.layout-options{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:13px}.layout-btn{padding:8px 12px;border:1px solid var(--control-border);border-radius:9px;background:var(--input);color:var(--ink);font-size:12px}.layout-btn[aria-pressed=true]{border-color:var(--accent);background:var(--soft);color:var(--accent);font-weight:700}
+.controls{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.control-group{min-width:0}.control-group label{display:block;color:var(--muted);font-size:12px;margin-bottom:6px}.control-group input[type=range]{width:100%;accent-color:var(--accent)}.control-group select,.control-group input[type=number]{width:100%;border:1px solid var(--control-border);border-radius:8px;padding:9px;background:var(--input);color:var(--ink)}
+.preview-wrap{overflow:hidden;border:1px solid var(--line);border-radius:12px;background:var(--input);padding:10px}.preview{position:relative;width:100%;aspect-ratio:4/3;overflow:hidden;background:#fff;touch-action:pan-y;user-select:none}.preview.auto{height:auto;min-height:130px;aspect-ratio:auto;display:flex;align-items:stretch;justify-content:center;gap:var(--gap,12px);padding:var(--pad,20px)}.preview.auto.horizontal{flex-direction:row}.preview.auto.vertical{flex-direction:column}.preview.auto.grid{display:grid;grid-template-columns:repeat(var(--cols,2),minmax(0,1fr));grid-auto-rows:1fr}
+.preview-item{position:relative;min-width:0;min-height:0;overflow:hidden;display:flex;align-items:center;justify-content:center}.preview.auto .preview-item{flex:1 1 0}.preview.auto .preview-item img{width:100%;height:100%;object-fit:contain;display:block}.preview.free .preview-item{position:absolute;border:1px dashed transparent;cursor:move}.preview.free .preview-item.selected{border-color:var(--accent);outline:1px solid var(--accent)}.preview.free .preview-item img{width:100%;height:100%;object-fit:contain;pointer-events:none}.resize-handle{position:absolute;width:16px;height:16px;right:-1px;bottom:-1px;border:2px solid white;border-radius:3px;background:var(--accent);cursor:nwse-resize;touch-action:none}
+.preview-empty{position:absolute;inset:0;display:grid;place-items:center;color:#806a5c;font-size:13px;text-align:center;padding:20px}
+.image-list{display:grid;gap:8px;margin-top:13px}.image-row{display:flex;align-items:center;gap:9px;padding:7px;border:1px solid var(--line);border-radius:9px;background:var(--input);min-width:0}.image-row img{width:48px;height:48px;object-fit:cover;border-radius:6px;background:var(--soft);flex:none}.image-name{min-width:0;flex:1;font-size:12px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.image-row button{border:0;background:transparent;color:var(--muted);padding:5px;font-size:17px}.image-row.dragging{opacity:.4}
+.actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:13px}.actions .primary{flex:1;min-width:150px;padding:13px;font-size:14px}.message{min-height:18px;margin:9px 0 0;color:var(--muted);font-size:12px}footer{color:var(--muted);font-size:11px;padding:10px 3px}
+@media(max-width:520px){body{padding:22px 15px 36px}h1{font-size:27px}.card{padding:15px}.controls{gap:10px}.preview-wrap{padding:6px}.toolbar{gap:7px}.field{font-size:12px}}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{transition:none!important;animation:none!important}}
+</style>
+</head>
+<body>
+<main>
+<header>
+<div class="topbar">
+<a class="brand" href="https://niyaaari.github.io/" aria-label="kubearma サービス一覧">
+<svg class="brand-mark" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" aria-hidden="true"><path d="M12 2.8 14.8 9l6.4.7-4.8 4.3 1.4 6.3-5.8-3.3-5.8 3.3 1.4-6.3-4.8-4.3L9.2 9 12 2.8Z"/></svg>
+kubearma</a>
+<button class="theme-toggle" id="themeToggle" type="button" aria-label="テーマを切り替え"><svg id="themeIcon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M4.93 4.93l1.42 1.42m11.3 11.3 1.42 1.42M2 12h2m16 0h2M4.93 19.07l1.42-1.42m11.3-11.3 1.42-1.42"/></svg></button>
+</div>
+<h1>画像並べくん</h1>
+<p class="sub">複数の画像を好きなレイアウトで並べて、1枚の画像にまとめられます。</p>
+</header>
+<section class="card">
+<h2>01　画像を追加</h2>
+<label class="upload" id="uploadArea">
+<input id="fileInput" type="file" accept="image/*" multiple>
+<span><strong>画像を選択、またはここにドロップ</strong><small>複数枚まとめて追加できます。画像はこのブラウザ内で処理されます。</small></span>
+</label>
+<div class="image-list" id="imageList"></div>
+<div class="toolbar" style="margin-top:10px"><button class="btn" id="addMore" type="button">＋ 画像を追加</button><button class="btn danger" id="clearAll" type="button" disabled>すべて削除</button></div>
+</section>
+<section class="card">
+<h2>02　配置を調整</h2>
+<div class="layout-options" role="group" aria-label="配置方式">
+<button class="layout-btn" data-layout="horizontal" aria-pressed="true">横並び</button>
+<button class="layout-btn" data-layout="vertical" aria-pressed="false">縦並び</button>
+<button class="layout-btn" data-layout="grid" aria-pressed="false">グリッド</button>
+<button class="layout-btn" data-layout="free" aria-pressed="false">自由配置</button>
+</div>
+<div class="controls">
+<div class="control-group" id="columnControl"><label for="columns">グリッドの列数</label><select id="columns"><option value="auto">自動</option><option value="1">1列</option><option value="2">2列</option><option value="3">3列</option><option value="4">4列</option><option value="5">5列</option></select></div>
+<div class="control-group"><label for="gap">画像同士の間隔：<output id="gapValue">12</output> px</label><input id="gap" type="range" min="0" max="60" value="12"></div>
+<div class="control-group"><label for="padding">外側の余白：<output id="paddingValue">20</output> px</label><input id="padding" type="range" min="0" max="100" value="20"></div>
+<div class="control-group"><label for="background">背景色</label><input id="background" type="color" value="#ffffff"></div>
+<div class="control-group"><label for="fitMode">画像のサイズ</label><select id="fitMode"><option value="contain">全体を表示</option><option value="cover">枠いっぱいに表示</option></select></div>
+<div class="control-group"><label for="unify">サイズを統一</label><select id="unify"><option value="on">統一する</option><option value="off">元の比率で表示</option></select></div>
+</div>
+<p class="hint" id="freeHint" hidden>画像をタップして選択し、ドラッグで移動。右下のハンドルをドラッグしてサイズを変更できます。</p>
+</section>
+<section class="card">
+<h2>03　プレビュー</h2>
+<p class="section-note">配置や設定を変更すると、プレビューにすぐ反映されます。</p>
+<div class="preview-wrap"><div class="preview auto horizontal" id="preview"><div class="preview-empty">ここに完成イメージが表示されます</div></div></div>
+<div class="actions"><button class="btn primary" id="downloadPng" type="button" disabled>PNGで保存</button><button class="btn" id="downloadJpg" type="button" disabled>JPEGで保存</button></div>
+<p class="message" id="message" aria-live="polite"></p>
+</section>
+<footer>© kubearma</footer>
+</main>
+<script>
+const root=document.documentElement,themeButton=document.getElementById('themeToggle'),themeIcon=document.getElementById('themeIcon');
+function applyTheme(theme){root.dataset.theme=theme;try{localStorage.setItem('pantaro_theme',theme)}catch(e){};const dark=theme==='dark';themeIcon.innerHTML=dark?'<path d="M20.9 13A9 9 0 0 1 11 3.1 9 9 0 1 0 20.9 13Z"/><path d="M16 3v4m-2-2h4"/>':'<circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M4.93 4.93l1.42 1.42m11.3 11.3 1.42 1.42M2 12h2m16 0h2M4.93 19.07l1.42-1.42m11.3-11.3 1.42-1.42"/>'}
+let saved='light';try{saved=localStorage.getItem('pantaro_theme')||'light'}catch(e){}applyTheme(saved);themeButton.addEventListener('click',()=>applyTheme(root.dataset.theme==='dark'?'light':'dark'));
+const $=id=>document.getElementById(id),files=[],items=[];let layout='horizontal',selectedId=null,dragState=null,nextId=1;
+const preview=$('preview'),list=$('imageList'),message=$('message');
+const settings=()=>({gap:+$('gap').value,padding:+$('padding').value,bg:$('background').value,fit:$('fitMode').value,unify:$('unify').value,columns:$('columns').value});
+function say(t){message.textContent=t}
+function autoColumns(n){if(n<=1)return 1;if(n<=4)return 2;if(n<=9)return 3;return 4}
+function renderList(){
+ list.innerHTML='';
+ items.forEach((item,index)=>{const row=document.createElement('div');row.className='image-row';row.draggable=true;row.dataset.id=item.id;
+ const img=document.createElement('img');img.src=item.url;img.alt='';
+ const name=document.createElement('span');name.className='image-name';name.textContent=item.file.name;
+ const up=document.createElement('button');up.type='button';up.textContent='↑';up.title='上へ';up.disabled=index===0;up.onclick=()=>moveItem(index,index-1);
+ const down=document.createElement('button');down.type='button';down.textContent='↓';down.title='下へ';down.disabled=index===items.length-1;down.onclick=()=>moveItem(index,index+1);
+ const del=document.createElement('button');del.type='button';del.textContent='×';del.title='削除';del.onclick=()=>removeItem(item.id);
+ row.append(img,name,up,down,del);row.addEventListener('dragstart',e=>{e.dataTransfer.setData('text/plain',String(item.id));row.classList.add('dragging')});row.addEventListener('dragend',()=>row.classList.remove('dragging'));row.addEventListener('dragover',e=>e.preventDefault());row.addEventListener('drop',e=>{e.preventDefault();const from=items.findIndex(x=>x.id===+e.dataTransfer.getData('text/plain'));const to=items.findIndex(x=>x.id===item.id);if(from>=0&&to>=0)moveItem(from,to)});list.append(row)});
+ $('clearAll').disabled=!items.length;$('downloadPng').disabled=!items.length;$('downloadJpg').disabled=!items.length;
+}
+function moveItem(from,to){if(to<0||to>=items.length)return;const [it]=items.splice(from,1);items.splice(to,0,it);renderAll()}
+function removeItem(id){const i=items.findIndex(x=>x.id===id);if(i<0)return;URL.revokeObjectURL(items[i].url);items.splice(i,1);if(selectedId===id)selectedId=null;renderAll()}
+function addFiles(fileList){const accepted=[...fileList].filter(f=>f.type.startsWith('image/'));if(!accepted.length){say('画像ファイルを選択してください。');return}accepted.forEach(file=>items.push({id:nextId++,file,url:URL.createObjectURL(file),x:80+(items.length%4)*35,y:70+(items.length%4)*35,w:300,h:220}));renderAll();say(accepted.length+'枚の画像を追加しました。')}
+$('fileInput').addEventListener('change',e=>{addFiles(e.target.files);e.target.value=''});
+$('addMore').addEventListener('click',()=>$('fileInput').click());
+$('clearAll').addEventListener('click',()=>{items.forEach(x=>URL.revokeObjectURL(x.url));items.length=0;selectedId=null;renderAll();say('画像をすべて削除しました。')});
+const upload=$('uploadArea');upload.addEventListener('dragover',e=>{e.preventDefault();upload.classList.add('dragover')});upload.addEventListener('dragleave',()=>upload.classList.remove('dragover'));upload.addEventListener('drop',e=>{e.preventDefault();upload.classList.remove('dragover');addFiles(e.dataTransfer.files)});
+document.querySelectorAll('.layout-btn').forEach(b=>b.addEventListener('click',()=>{layout=b.dataset.layout;document.querySelectorAll('.layout-btn').forEach(x=>x.setAttribute('aria-pressed',String(x===b)));$('columnControl').hidden=layout!=='grid';$('freeHint').hidden=layout!=='free';renderPreview()}));
+$('columnControl').hidden=true;
+['gap','padding','background','fitMode','unify','columns'].forEach(id=>$(id).addEventListener('input',()=>{if(id==='gap')$('gapValue').textContent=$('gap').value;if(id==='padding')$('paddingValue').textContent=$('padding').value;renderPreview()}));
+function renderPreview(){
+ preview.innerHTML='';const s=settings();preview.style.background=s.bg;preview.style.setProperty('--gap',s.gap+'px');preview.style.setProperty('--pad',s.padding+'px');
+ preview.className='preview '+(layout==='free'?'free':'auto '+layout);
+ if(!items.length){const empty=document.createElement('div');empty.className='preview-empty';empty.textContent='ここに完成イメージが表示されます';preview.append(empty);return}
+ if(layout==='free'){
+  items.forEach(it=>{const el=document.createElement('div');el.className='preview-item'+(selectedId===it.id?' selected':'');el.dataset.id=it.id;el.style.left=(it.x/1200*100)+'%';el.style.top=(it.y/900*100)+'%';el.style.width=(it.w/1200*100)+'%';el.style.height=(it.h/900*100)+'%';
+   const img=document.createElement('img');img.src=it.url;img.style.objectFit=s.fit;el.append(img);const handle=document.createElement('span');handle.className='resize-handle';el.append(handle);el.addEventListener('pointerdown',startFreeDrag);handle.addEventListener('pointerdown',startFreeResize);preview.append(el)});
+ }else{
+  const cols=s.columns==='auto'?autoColumns(items.length):+s.columns;
+  if(layout==='grid')preview.style.setProperty('--cols',cols);
+  items.forEach(it=>{const el=document.createElement('div');el.className='preview-item';const img=document.createElement('img');img.src=it.url;img.style.objectFit=s.fit;el.append(img);preview.append(el)});
+ }
+}
+function startFreeDrag(e){if(e.target.classList.contains('resize-handle'))return;const id=+e.currentTarget.dataset.id;selectedId=id;const it=items.find(x=>x.id===id);dragState={mode:'move',id,startX:e.clientX,startY:e.clientY,x:it.x,y:it.y};e.currentTarget.setPointerCapture(e.pointerId);renderPreview();e.preventDefault()}
+function startFreeResize(e){e.stopPropagation();const id=+e.currentTarget.parentElement.dataset.id;selectedId=id;const it=items.find(x=>x.id===id);dragState={mode:'resize',id,startX:e.clientX,startY:e.clientY,w:it.w,h:it.h};e.currentTarget.setPointerCapture(e.pointerId);e.preventDefault()}
+preview.addEventListener('pointermove',e=>{if(!dragState)return;const it=items.find(x=>x.id===dragState.id);if(!it)return;const rect=preview.getBoundingClientRect(),dx=(e.clientX-dragState.startX)/rect.width*1200,dy=(e.clientY-dragState.startY)/rect.height*900;if(dragState.mode==='move'){it.x=Math.max(0,Math.min(1200-it.w,dragState.x+dx));it.y=Math.max(0,Math.min(900-it.h,dragState.y+dy))}else{it.w=Math.max(60,Math.min(1200-it.x,dragState.w+dx));it.h=Math.max(60,Math.min(900-it.y,dragState.h+dy))}const el=preview.querySelector('[data-id="'+it.id+'"]');if(el){el.style.left=it.x/12+'%';el.style.top=it.y/9+'%';el.style.width=it.w/12+'%';el.style.height=it.h/9+'%'}});
+preview.addEventListener('pointerup',()=>dragState=null);preview.addEventListener('pointercancel',()=>dragState=null);
+function renderAll(){renderList();renderPreview()}
+async function loadImages(){await Promise.all(items.map(it=>new Promise((resolve,reject)=>{const im=new Image();im.onload=()=>{it.image=im;resolve()};im.onerror=reject;im.src=it.url})))}
+async function exportImage(type){
+ if(!items.length)return;try{await loadImages();const s=settings(),canvas=document.createElement('canvas'),ctx=canvas.getContext('2d');let W=1200,H=900;canvas.width=W;canvas.height=H;ctx.fillStyle=s.bg;ctx.fillRect(0,0,W,H);
+ const draw=(im,x,y,w,h)=>{const ratio=im.naturalWidth/im.naturalHeight,box=w/h;let dw=w,dh=h;if(s.fit==='contain'){if(ratio>box)dh=w/ratio;else dw=h*ratio}else{if(ratio>box)dw=h*ratio;else dh=w/ratio}ctx.save();ctx.beginPath();ctx.rect(x,y,w,h);ctx.clip();ctx.drawImage(im,x+(w-dw)/2,y+(h-dh)/2,dw,dh);ctx.restore()};
+ if(layout==='free'){items.forEach(it=>draw(it.image,it.x,it.y,it.w,it.h))}
+ else{const n=items.length,p=s.padding,g=s.gap;let cols=layout==='horizontal'?n:layout==='vertical'?1:(s.columns==='auto'?autoColumns(n):+s.columns),rows=Math.ceil(n/cols);let cellW=(W-p*2-g*(cols-1))/cols,cellH=(H-p*2-g*(rows-1))/rows;if(layout==='horizontal'){cellW=Math.max(1,(W-p*2-g*(n-1))/n);cellH=H-p*2}if(layout==='vertical'){cellW=W-p*2;cellH=Math.max(1,(H-p*2-g*(n-1))/n)}items.forEach((it,i)=>{let col=layout==='vertical'?0:i%cols,row=layout==='horizontal'?0:Math.floor(i/cols);let x=p+col*(cellW+g),y=p+row*(cellH+g);draw(it.image,x,y,cellW,cellH)})}
+ const mime=type==='jpeg'?'image/jpeg':'image/png';const blob=await new Promise(resolve=>canvas.toBlob(resolve,mime,.92));if(!blob)throw new Error('export');const url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='画像並べくん.'+(type==='jpeg'?'jpg':'png');a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);say((type==='jpeg'?'JPEG':'PNG')+'画像を保存しました！')
+ }catch(e){say('画像の書き出しに失敗しました。画像を読み込み直してお試しください。')}
+}
+$('downloadPng').addEventListener('click',()=>exportImage('png'));$('downloadJpg').addEventListener('click',()=>exportImage('jpeg'));
+renderAll();
+</script>
+</body></html>
