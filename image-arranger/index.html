@@ -75,13 +75,14 @@ kubearma</a>
 </section>
 <section class="card">
 <h2>03　プレビュー</h2>
-<p class="section-note">配置や設定を変更すると、プレビューにすぐ反映されます。</p>
+<p class="section-note">配置や設定を変更すると、プレビューにすぐ反映されます。PDFは画像を高解像度PNGとして埋め込むため、JPEGのような再圧縮による劣化を抑えられます。</p>
 <div class="preview-wrap"><div class="preview auto horizontal" id="preview"><div class="preview-empty">ここに完成イメージが表示されます</div></div></div>
-<div class="actions"><button class="btn primary" id="downloadPng" type="button" disabled>PNGで保存</button><button class="btn" id="downloadJpg" type="button" disabled>JPEGで保存</button></div>
+<div class="actions"><button class="btn primary" id="downloadPng" type="button" disabled>PNGで保存</button><button class="btn" id="downloadJpg" type="button" disabled>JPEGで保存</button><button class="btn" id="downloadPdf" type="button" disabled>PDFで保存</button></div>
 <p class="message" id="message" aria-live="polite"></p>
 </section>
 <footer>© kubearma</footer>
 </main>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script>
 const root=document.documentElement,themeButton=document.getElementById('themeToggle'),themeIcon=document.getElementById('themeIcon');
 function applyTheme(theme){root.dataset.theme=theme;try{localStorage.setItem('pantaro_theme',theme)}catch(e){};const dark=theme==='dark';themeIcon.innerHTML=dark?'<path d="M20.9 13A9 9 0 0 1 11 3.1 9 9 0 1 0 20.9 13Z"/><path d="M16 3v4m-2-2h4"/>':'<circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M4.93 4.93l1.42 1.42m11.3 11.3 1.42 1.42M2 12h2m16 0h2M4.93 19.07l1.42-1.42m11.3-11.3 1.42-1.42"/>'}
@@ -100,7 +101,7 @@ function renderList(){
  const down=document.createElement('button');down.type='button';down.textContent='↓';down.title='下へ';down.disabled=index===items.length-1;down.onclick=()=>moveItem(index,index+1);
  const del=document.createElement('button');del.type='button';del.textContent='×';del.title='削除';del.onclick=()=>removeItem(item.id);
  row.append(img,name,up,down,del);row.addEventListener('dragstart',e=>{e.dataTransfer.setData('text/plain',String(item.id));row.classList.add('dragging')});row.addEventListener('dragend',()=>row.classList.remove('dragging'));row.addEventListener('dragover',e=>e.preventDefault());row.addEventListener('drop',e=>{e.preventDefault();const from=items.findIndex(x=>x.id===+e.dataTransfer.getData('text/plain'));const to=items.findIndex(x=>x.id===item.id);if(from>=0&&to>=0)moveItem(from,to)});list.append(row)});
- $('clearAll').disabled=!items.length;$('downloadPng').disabled=!items.length;$('downloadJpg').disabled=!items.length;
+ $('clearAll').disabled=!items.length;$['downloadPng','downloadJpg','downloadPdf'].forEach(id=>$(id).disabled=!items.length;
 }
 function moveItem(from,to){if(to<0||to>=items.length)return;const [it]=items.splice(from,1);items.splice(to,0,it);renderAll()}
 function removeItem(id){const i=items.findIndex(x=>x.id===id);if(i<0)return;URL.revokeObjectURL(items[i].url);items.splice(i,1);if(selectedId===id)selectedId=null;renderAll()}
@@ -131,15 +132,21 @@ preview.addEventListener('pointermove',e=>{if(!dragState)return;const it=items.f
 preview.addEventListener('pointerup',()=>dragState=null);preview.addEventListener('pointercancel',()=>dragState=null);
 function renderAll(){renderList();renderPreview()}
 async function loadImages(){await Promise.all(items.map(it=>new Promise((resolve,reject)=>{const im=new Image();im.onload=()=>{it.image=im;resolve()};im.onerror=reject;im.src=it.url})))}
-async function exportImage(type){
- if(!items.length)return;try{await loadImages();const s=settings(),canvas=document.createElement('canvas'),ctx=canvas.getContext('2d');let W=1200,H=900;canvas.width=W;canvas.height=H;ctx.fillStyle=s.bg;ctx.fillRect(0,0,W,H);
+async function makeCanvas(scale=2){
+ await loadImages();const s=settings(),canvas=document.createElement('canvas'),ctx=canvas.getContext('2d');const W=1200,H=900;canvas.width=W*scale;canvas.height=H*scale;ctx.scale(scale,scale);ctx.fillStyle=s.bg;ctx.fillRect(0,0,W,H);
  const draw=(im,x,y,w,h)=>{const ratio=im.naturalWidth/im.naturalHeight,box=w/h;let dw=w,dh=h;if(s.fit==='contain'){if(ratio>box)dh=w/ratio;else dw=h*ratio}else{if(ratio>box)dw=h*ratio;else dh=w/ratio}ctx.save();ctx.beginPath();ctx.rect(x,y,w,h);ctx.clip();ctx.drawImage(im,x+(w-dw)/2,y+(h-dh)/2,dw,dh);ctx.restore()};
  if(layout==='free'){items.forEach(it=>draw(it.image,it.x,it.y,it.w,it.h))}
  else{const n=items.length,p=s.padding,g=s.gap;let cols=layout==='horizontal'?n:layout==='vertical'?1:(s.columns==='auto'?autoColumns(n):+s.columns),rows=Math.ceil(n/cols);let cellW=(W-p*2-g*(cols-1))/cols,cellH=(H-p*2-g*(rows-1))/rows;if(layout==='horizontal'){cellW=Math.max(1,(W-p*2-g*(n-1))/n);cellH=H-p*2}if(layout==='vertical'){cellW=W-p*2;cellH=Math.max(1,(H-p*2-g*(n-1))/n)}items.forEach((it,i)=>{let col=layout==='vertical'?0:i%cols,row=layout==='horizontal'?0:Math.floor(i/cols);let x=p+col*(cellW+g),y=p+row*(cellH+g);draw(it.image,x,y,cellW,cellH)})}
- const mime=type==='jpeg'?'image/jpeg':'image/png';const blob=await new Promise(resolve=>canvas.toBlob(resolve,mime,.92));if(!blob)throw new Error('export');const url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='画像並べくん.'+(type==='jpeg'?'jpg':'png');a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);say((type==='jpeg'?'JPEG':'PNG')+'画像を保存しました！')
+ return canvas;
+}
+async function exportImage(type){
+ if(!items.length)return;try{const canvas=await makeCanvas(2),mime=type==='jpeg'?'image/jpeg':'image/png';const blob=await new Promise(resolve=>canvas.toBlob(resolve,mime,.92));if(!blob)throw new Error('export');const url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='画像並べくん.'+(type==='jpeg'?'jpg':'png');a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);say((type==='jpeg'?'JPEG':'PNG')+'画像を保存しました！')
  }catch(e){say('画像の書き出しに失敗しました。画像を読み込み直してお試しください。')}
 }
-$('downloadPng').addEventListener('click',()=>exportImage('png'));$('downloadJpg').addEventListener('click',()=>exportImage('jpeg'));
+async function exportPDF(){
+ if(!items.length)return;try{if(!window.jspdf?.jsPDF)throw new Error('PDF library unavailable');const canvas=await makeCanvas(3),data=canvas.toDataURL('image/png');const {jsPDF}=window.jspdf;const pdf=new jsPDF({orientation:'landscape',unit:'pt',format:[1200,900],compress:false});pdf.addImage(data,'PNG',0,0,1200,900,undefined,'NONE');pdf.save('画像並べくん.pdf');say('PDFを保存しました！高解像度PNGをそのまま埋め込んでいます。')}catch(e){say('PDFの書き出しに失敗しました。通信環境を確認して再度お試しください。')}
+}
+$('downloadPng').addEventListener('click',()=>exportImage('png'));$('downloadJpg').addEventListener('click',()=>exportImage('jpeg'));$('downloadPdf').addEventListener('click',exportPDF);
 renderAll();
 </script>
 </body></html>
