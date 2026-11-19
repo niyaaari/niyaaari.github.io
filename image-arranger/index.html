@@ -101,7 +101,7 @@ function renderList(){
  const down=document.createElement('button');down.type='button';down.textContent='↓';down.title='下へ';down.disabled=index===items.length-1;down.onclick=()=>moveItem(index,index+1);
  const del=document.createElement('button');del.type='button';del.textContent='×';del.title='削除';del.onclick=()=>removeItem(item.id);
  row.append(img,name,up,down,del);row.addEventListener('dragstart',e=>{e.dataTransfer.setData('text/plain',String(item.id));row.classList.add('dragging')});row.addEventListener('dragend',()=>row.classList.remove('dragging'));row.addEventListener('dragover',e=>e.preventDefault());row.addEventListener('drop',e=>{e.preventDefault();const from=items.findIndex(x=>x.id===+e.dataTransfer.getData('text/plain'));const to=items.findIndex(x=>x.id===item.id);if(from>=0&&to>=0)moveItem(from,to)});list.append(row)});
- $('clearAll').disabled=!items.length;$['downloadPng','downloadJpg','downloadPdf'].forEach(id=>$(id).disabled=!items.length;
+ $('clearAll').disabled=!items.length;['downloadPng','downloadJpg','downloadPdf'].forEach(id=>$(id).disabled=!items.length);
 }
 function moveItem(from,to){if(to<0||to>=items.length)return;const [it]=items.splice(from,1);items.splice(to,0,it);renderAll()}
 function removeItem(id){const i=items.findIndex(x=>x.id===id);if(i<0)return;URL.revokeObjectURL(items[i].url);items.splice(i,1);if(selectedId===id)selectedId=null;renderAll()}
