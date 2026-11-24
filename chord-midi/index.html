@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#E9E2D0">
+<meta name="description" content="コード進行を入力してピアノのMIDIファイルに書き出せるツールです。">
+<title>コードmidi書き起こしくん | kubearma</title>
+<style>
+@font-face{font-family:GenEi;src:url("https://raw.githubusercontent.com/niyaaari/part-time-pay-calculator/main/fonts/GenEiMGothic2-Regular.ttf");font-weight:400;font-display:swap}
+@font-face{font-family:GenEi;src:url("https://raw.githubusercontent.com/niyaaari/part-time-pay-calculator/main/fonts/GenEiMGothic2-Medium.ttf");font-weight:500;font-display:swap}
+@font-face{font-family:GenEi;src:url("https://raw.githubusercontent.com/niyaaari/part-time-pay-calculator/main/fonts/GenEiMGothic2-Bold.ttf");font-weight:700;font-display:swap}
+:root{color-scheme:light;--bg:#E9E2D0;--ink:#6C4732;--muted:#806a5c;--line:rgba(108,71,50,.22);--accent:#6C4732;--input:rgba(255,255,255,.58);--theme-button:rgba(255,255,255,.24);--control-border:rgba(108,71,50,.38);--deco:#6C4732;--soft:rgba(108,71,50,.1)}
+:root[data-theme="dark"]{color-scheme:dark;--bg:#171b25;--ink:#e7e9ee;--muted:#a5aab5;--accent:#91aaff;--input:rgba(30,34,43,.7);--theme-button:rgba(43,46,56,.76);--control-border:rgba(255,255,255,.2);--deco:#596170;--line:rgba(255,255,255,.12);--soft:rgba(145,170,255,.12)}
+*{box-sizing:border-box}body{margin:0;min-height:100vh;padding:30px 15px 42px;color:var(--ink);font-family:GenEi,system-ui,sans-serif;background:var(--bg);transition:background .28s,color .28s}main{max-width:760px;margin:auto}
+.topbar{position:relative;left:50%;width:min(920px,calc(100vw - 32px));transform:translateX(-50%);display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:24px}
+.brand{display:inline-flex;align-items:center;gap:7px;font-size:14px;font-weight:700;letter-spacing:.04em;color:inherit;text-decoration:none}.brand-mark{width:17px;height:17px;flex:none}
+.theme-toggle{display:grid;place-items:center;width:32px;height:32px;padding:0;border:1px solid var(--control-border);border-radius:50%;background:var(--theme-button);color:var(--ink);cursor:pointer;transition:background .5s,border-color .5s,color .5s,transform .25s}.theme-toggle:active{transform:scale(.92)}.theme-toggle svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:1.65;stroke-linecap:round;stroke-linejoin:round}
+h1{font-size:clamp(23px,5vw,30px);margin:7px 0}.sub,.hint{color:var(--muted);font-size:13px;line-height:1.8}.sub{margin:0 0 24px}
+.card{position:relative;isolation:isolate;margin:13px 0;padding:19px;background:transparent}.card:before,.card:after{content:"";position:absolute;z-index:0;pointer-events:none}.card:before{top:-6px;bottom:-6px;left:0;right:0;border-left:2px solid var(--deco);border-right:2px solid var(--deco)}.card:after{top:0;bottom:0;left:-6px;right:-6px;border-top:2px solid var(--deco);border-bottom:2px solid var(--deco)}.card>*{position:relative;z-index:1}
+h2{font-size:16px;margin:0 0 14px}.field-label{display:block;font-size:13px;margin-bottom:7px}input,textarea,button{font:inherit}input,textarea{width:100%;border:1px solid var(--control-border);border-radius:9px;background:var(--input);color:var(--ink);padding:11px 12px;outline:none}input:focus,textarea:focus{border-color:var(--accent);box-shadow:0 0 0 2px var(--soft)}.bpm-row{display:flex;align-items:center;gap:10px;max-width:240px}.bpm-row input{width:110px}.measure{border:1px solid var(--line);border-radius:10px;padding:13px;margin:10px 0;background:var(--input)}.measure-head{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:8px;font-size:13px}.measure textarea{min-height:54px;resize:vertical;font-family:ui-monospace,Consolas,monospace;font-size:16px;letter-spacing:.04em}.measure-foot{display:flex;justify-content:space-between;gap:8px;margin-top:6px;color:var(--muted);font-size:11px}.btn{border:1px solid var(--control-border);border-radius:9px;background:var(--input);color:var(--ink);padding:9px 13px;font-size:13px;cursor:pointer}.btn.primary{background:var(--accent);border-color:var(--accent);color:white}.btn.danger{color:#c34b50}.actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:13px}.remove{font-size:12px;padding:5px 9px}.hint{margin:8px 0}.message{font-size:13px;line-height:1.7;margin-top:12px;white-space:pre-line}.message.error{color:#c34b50}.message.ok{color:var(--muted)}.legend{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:5px 14px;font-size:12px;color:var(--muted)}.legend b{color:var(--ink);font-weight:500}.footer{text-align:center;margin-top:34px;font-size:12px;color:var(--muted)}@media(max-width:480px){body{padding-top:20px}.card{padding:15px}.legend{grid-template-columns:1fr 1fr}}
+</style>
+</head>
+<body>
+<main>
+<header class="topbar">
+<a class="brand" href="https://niyaaari.github.io/" aria-label="kubearma サービス一覧"><svg class="brand-mark" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M8.581 9.986a.27.27 0 0 0-.291-.355l-5.055.72a.27.27 0 0 0-.229.326.27.27 0 0 0 .07.13l3.6 3.716a.266.266 0 0 0 .378.013.3.3 0 0 0 .071-.12zM6.745 20.393a.265.265 0 0 0 .376.317l4.727-2.244a.27.27 0 0 1 .222 0l4.94 2.24a.27.27 0 0 0 .365-.334c-.932-2.806-1.774-5.58-2.674-8.38a.265.265 0 0 0-.476-.053l-1.996 3.578a.27.27 0 0 1-.238.138h-.085a.26.26 0 0 1-.232-.143L9.736 11.95a.27.27 0 0 0-.233-.143h-.026a.265.265 0 0 0-.26.19a244 244 0 0 0-2.472 8.396m10.093-6.056a.264.264 0 0 0 .445.106l3.636-3.636a.271.271 0 0 0-.153-.461l-5.029-.704a.27.27 0 0 0-.296.35z"/><path fill="currentColor" d="M14.024 9.551a.32.32 0 0 0 0-.248l-.027-.064l-1.784-5.78a.265.265 0 0 0-.513 0l-1.747 5.78l-.026.085a.3.3 0 0 0 .01.201l1.731 3.991a.28.28 0 0 0 .244.16h.063a.27.27 0 0 0 .244-.16l1.8-3.965z"/></svg><span>kubearma</span></a>
+<button class="theme-toggle" id="themeToggle" type="button" aria-label="テーマを切り替え"><svg id="themeIcon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M4.93 4.93l1.42 1.42m11.3 11.3 1.42 1.42M2 12h2m16 0h2M4.93 19.07l1.42-1.42m11.3-11.3 1.42-1.42"/></svg></button>
+</header>
+<h1>コードmidi書き起こしくん</h1>
+<p class="sub">コード進行を入力して、ピアノのMIDIファイルに書き出せます。</p>
+<section class="card">
+<h2>テンポ</h2><label class="field-label" for="bpm">BPM（40〜240）</label><div class="bpm-row"><input id="bpm" type="number" min="40" max="240" value="120"><span class="hint">♩ = BPM</span></div>
+</section>
+<section class="card">
+<h2>コード進行</h2>
+<p class="hint">1入力欄＝1小節（4/4）。コード1つとカンマ1つをそれぞれ16分音符1つ分として数えます。小節内の合計が16になるように入力してください。</p>
+<div id="measures"></div>
+<div class="actions"><button class="btn" id="addMeasure">＋ 小節を追加</button><button class="btn danger" id="clearAll">すべてクリア</button></div>
+</section>
+<section class="card">
+<h2>入力ルール</h2>
+<p class="hint">コードは「ルート音＋種類の数字」で入力します。コード部分は文字数に関係なく1枠として扱います。</p>
+<div class="legend">
+<div><b>0</b> maj7</div><div><b>1</b> m</div><div><b>2</b> dim</div><div><b>3</b> 7sus4</div><div><b>4</b> aug</div><div><b>5</b> m7(-5)</div><div><b>6</b> 6</div><div><b>7</b> 7</div><div><b>8</b> m7</div><div><b>9</b> 9</div>
+</div>
+<p class="hint">A〜G：ルート音 ／ +：シャープ ／ -：フラット ／ ,：直前のコードを伸ばす</p>
+<p class="hint">例：<code>F1,+A2-G3</code> → Fm（2枠）→ A#dim（1枠）→ Gb7sus4（1枠）</p>
+<p class="hint">例：<code>-E4</code> → Ebaug</p>
+</section>
+<div class="actions"><button class="btn primary" id="exportMidi">MIDIを書き出す</button></div>
+<div id="message" class="message" role="status" aria-live="polite"></div>
+<footer class="footer">© kubearma</footer>
+</main>
+<script>
+const $=id=>document.getElementById(id);
+const themeKey='pantaro_theme';
+function applyTheme(){const dark=localStorage.getItem(themeKey)==='dark';document.documentElement.dataset.theme=dark?'dark':'light';$('themeIcon').innerHTML=dark?'<path d="M20.5 15.2A8.5 8.5 0 0 1 8.8 3.5 8.5 8.5 0 1 0 20.5 15.2Z"/>':'<circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M4.93 4.93l1.42 1.42m11.3 11.3 1.42 1.42M2 12h2m16 0h2M4.93 19.07l1.42-1.42m11.3-11.3 1.42-1.42"/>'}
+$('themeToggle').addEventListener('click',()=>{localStorage.setItem(themeKey,localStorage.getItem(themeKey)==='dark'?'light':'dark');applyTheme()});applyTheme();
+let measureCount=0;
+function addMeasure(value=''){measureCount++;const n=measureCount,el=document.createElement('div');el.className='measure';el.dataset.measure=n;el.innerHTML='<div class="measure-head"><strong>小節 '+n+'</strong><button class="btn remove" type="button">削除</button></div><textarea aria-label="小節 '+n+' のコード進行" placeholder="例：F1,+A2-G3"></textarea><div class="measure-foot"><span class="count">0 / 16 枠</span><span>コード＋カンマ＝16枠</span></div>';el.querySelector('textarea').value=value;el.querySelector('textarea').addEventListener('input',()=>updateCounts());el.querySelector('.remove').addEventListener('click',()=>{el.remove();renumber();updateCounts()});$('measures').append(el);renumber();updateCounts()}
+function renumber(){[...$('measures').children].forEach((el,i)=>{el.querySelector('strong').textContent='小節 '+(i+1);el.querySelector('textarea').setAttribute('aria-label','小節 '+(i+1)+' のコード進行')})}
+function parseBar(src){
+ const s=src.replace(/\s/g,'');if(!s)return {error:'コードを入力してください。'};
+ const tokens=[];let i=0,units=0;
+ while(i<s.length){
+  if(s[i]===','){if(!tokens.length)return {error:'小節の先頭に休符は置けません。'};tokens[tokens.length-1].duration++;units++;i++;continue}
+  const m=s.slice(i).match(/^([+-]?)([A-Ga-g])([0-9])/);if(!m)return {error:'入力形式を確認してください。使える形式は A〜G、+/-、0〜9、カンマです。'};
+  const root=m[2].toUpperCase(),quality=Number(m[3]),acc=m[1]==='+'?1:m[1]==='-'?-1:0;
+  tokens.push({root,quality,acc,duration:1});units++;i+=m[0].length;
+ }
+ if(units!==16)return {error:'小節の長さが'+units+'枠です。コードとカンマを合わせて16枠にしてください。'};
+ return {tokens};
+}
+const rootSemitone={C:0,D:2,E:4,F:5,G:7,A:9,B:11};
+const intervals=[[0,4,7,11],[0,3,7],[0,3,6],[0,5,7,10],[0,4,8],[0,3,6,10],[0,4,7,9],[0,4,7,10],[0,3,7,10],[0,4,7,10,14]];
+function updateCounts(){[...$('measures').children].forEach(el=>{const v=el.querySelector('textarea').value.replace(/\s/g,'');const count=[...v.matchAll(/[+-]?[A-Ga-g][0-9]|,/g)].length;el.querySelector('.count').textContent=count+' / 16 枠'})}
+function vlq(value){let buffer=value&0x7f;const out=[];while((value>>=7)){buffer<<=8;buffer|=((value&0x7f)|0x80)}while(true){out.push(buffer&255);if(buffer&0x80)buffer>>=8;else break}return out}
+function be16(n){return [(n>>8)&255,n&255]}function be32(n){return [(n>>>24)&255,(n>>>16)&255,(n>>>8)&255,n&255]}
+function makeMidi(bars,bpm){
+ const ppq=480,events=[];events.push({t:0,p:[0xff,0x51,0x03,...[(60000000/bpm)>>16&255,(60000000/bpm)>>8&255,(60000000/bpm)&255]]});
+ events.push({t:0,p:[0xc0,0]});
+ bars.forEach((bar,barIndex)=>{let cursor=barIndex*ppq*4;bar.tokens.forEach(ch=>{const base=cursor;const root=(rootSemitone[ch.root]+ch.acc+120)%12+60;intervals[ch.quality].forEach(semi=>{const note=root+semi;events.push({t:base,p:[0x90,note,88]});events.push({t:base+ch.duration*120-2,p:[0x80,note,0]})});cursor+=ch.duration*120})});
+ events.sort((a,b)=>a.t-b.t);let track=[],last=0;events.forEach(e=>{track.push(...vlq(e.t-last),...e.p);last=e.t});track.push(0,0xff,0x2f,0);
+ const data=[...new TextEncoder().encode('MThd'),...be32(6),...be16(0),...be16(1),...be16(ppq),...new TextEncoder().encode('MTrk'),...be32(track.length),...track];return new Uint8Array(data)
+}
+$('addMeasure').addEventListener('click',()=>addMeasure());$('clearAll').addEventListener('click',()=>{if(confirm('すべての小節を削除しますか？')){$('measures').innerHTML='';measureCount=0;addMeasure();$('message').textContent='入力をクリアしました。';$('message').className='message ok'}});
+$('exportMidi').addEventListener('click',()=>{const bpm=Number($('bpm').value);if(!Number.isInteger(bpm)||bpm<40||bpm>240){$('message').textContent='BPMは40〜240の整数で入力してください。';$('message').className='message error';return}
+ const bars=[...$('measures').children].map((el,i)=>{const r=parseBar(el.querySelector('textarea').value);return r.error?{error:'小節'+(i+1)+'：'+r.error}:r});
+ const bad=bars.find(x=>x.error);if(bad){$('message').textContent=bad.error;$('message').className='message error';return}
+ const midi=makeMidi(bars,bpm),url=URL.createObjectURL(new Blob([midi],{type:'audio/midi'})),a=document.createElement('a');a.href=url;a.download='kubearma-chord-midi.mid';a.click();URL.revokeObjectURL(url);$('message').textContent='MIDIファイルを書き出しました！（ピアノ音色）';$('message').className='message ok'
+});
+addMeasure();
+</script>
+</body></html>
