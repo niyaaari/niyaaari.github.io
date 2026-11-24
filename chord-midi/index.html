@@ -33,7 +33,7 @@ h2{font-size:16px;margin:0 0 14px}.field-label{display:block;font-size:13px;marg
 </section>
 <section class="card">
 <h2>コード進行</h2>
-<p class="hint">1入力欄＝1小節（4/4）。コード1つとカンマ1つをそれぞれ16分音符1つ分として数えます。小節内の合計が16になるように入力してください。</p>
+<p class="hint">1入力欄＝1小節（4/4）。コード1つとカンマ1つをそれぞれ16分音符1つ分として数えます。入力したコードとカンマの合計数に応じて、1小節の中に均等に割り振ります。最大64枠まで使えます。</p>
 <div id="measures"></div>
 <div class="actions"><button class="btn" id="addMeasure">＋ 小節を追加</button><button class="btn danger" id="clearAll">すべてクリア</button></div>
 </section>
@@ -57,7 +57,7 @@ const themeKey='pantaro_theme';
 function applyTheme(){const dark=localStorage.getItem(themeKey)==='dark';document.documentElement.dataset.theme=dark?'dark':'light';$('themeIcon').innerHTML=dark?'<path d="M20.5 15.2A8.5 8.5 0 0 1 8.8 3.5 8.5 8.5 0 1 0 20.5 15.2Z"/>':'<circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M4.93 4.93l1.42 1.42m11.3 11.3 1.42 1.42M2 12h2m16 0h2M4.93 19.07l1.42-1.42m11.3-11.3 1.42-1.42"/>'}
 $('themeToggle').addEventListener('click',()=>{localStorage.setItem(themeKey,localStorage.getItem(themeKey)==='dark'?'light':'dark');applyTheme()});applyTheme();
 let measureCount=0;
-function addMeasure(value=''){measureCount++;const n=measureCount,el=document.createElement('div');el.className='measure';el.dataset.measure=n;el.innerHTML='<div class="measure-head"><strong>小節 '+n+'</strong><button class="btn remove" type="button">削除</button></div><textarea aria-label="小節 '+n+' のコード進行" placeholder="例：F1,+A2-G3"></textarea><div class="measure-foot"><span class="count">0 / 16 枠</span><span>コード＋カンマ＝16枠</span></div>';el.querySelector('textarea').value=value;el.querySelector('textarea').addEventListener('input',()=>updateCounts());el.querySelector('.remove').addEventListener('click',()=>{el.remove();renumber();updateCounts()});$('measures').append(el);renumber();updateCounts()}
+function addMeasure(value=''){measureCount++;const n=measureCount,el=document.createElement('div');el.className='measure';el.dataset.measure=n;el.innerHTML='<div class="measure-head"><strong>小節 '+n+'</strong><button class="btn remove" type="button">削除</button></div><textarea aria-label="小節 '+n+' のコード進行" placeholder="例：F1,+A2-G3"></textarea><div class="measure-foot"><span class="count">0 / 16 枠</span><span>コード＋カンマ（最大64枠）</span></div>';el.querySelector('textarea').value=value;el.querySelector('textarea').addEventListener('input',()=>updateCounts());el.querySelector('.remove').addEventListener('click',()=>{el.remove();renumber();updateCounts()});$('measures').append(el);renumber();updateCounts()}
 function renumber(){[...$('measures').children].forEach((el,i)=>{el.querySelector('strong').textContent='小節 '+(i+1);el.querySelector('textarea').setAttribute('aria-label','小節 '+(i+1)+' のコード進行')})}
 function parseBar(src){
  const s=src.replace(/\s/g,'');if(!s)return {error:'コードを入力してください。'};
@@ -68,18 +68,18 @@ function parseBar(src){
   const root=m[2].toUpperCase(),quality=Number(m[3]),acc=m[1]==='+'?1:m[1]==='-'?-1:0;
   tokens.push({root,quality,acc,duration:1});units++;i+=m[0].length;
  }
- if(units!==16)return {error:'小節の長さが'+units+'枠です。コードとカンマを合わせて16枠にしてください。'};
+ if(units>64)return {error:'1小節は最大64枠まで入力できます。'};
  return {tokens};
 }
 const rootSemitone={C:0,D:2,E:4,F:5,G:7,A:9,B:11};
 const intervals=[[0,4,7,11],[0,3,7],[0,3,6],[0,5,7,10],[0,4,8],[0,3,6,10],[0,4,7,9],[0,4,7,10],[0,3,7,10],[0,4,7,10,14]];
-function updateCounts(){[...$('measures').children].forEach(el=>{const v=el.querySelector('textarea').value.replace(/\s/g,'');const count=[...v.matchAll(/[+-]?[A-Ga-g][0-9]|,/g)].length;el.querySelector('.count').textContent=count+' / 16 枠'})}
+function updateCounts(){[...$('measures').children].forEach(el=>{const v=el.querySelector('textarea').value.replace(/\s/g,'');const count=[...v.matchAll(/[+-]?[A-Ga-g][0-9]|,/g)].length;el.querySelector('.count').textContent=count+' 枠'})}
 function vlq(value){let buffer=value&0x7f;const out=[];while((value>>=7)){buffer<<=8;buffer|=((value&0x7f)|0x80)}while(true){out.push(buffer&255);if(buffer&0x80)buffer>>=8;else break}return out}
 function be16(n){return [(n>>8)&255,n&255]}function be32(n){return [(n>>>24)&255,(n>>>16)&255,(n>>>8)&255,n&255]}
 function makeMidi(bars,bpm){
  const ppq=480,events=[];events.push({t:0,p:[0xff,0x51,0x03,...[(60000000/bpm)>>16&255,(60000000/bpm)>>8&255,(60000000/bpm)&255]]});
  events.push({t:0,p:[0xc0,0]});
- bars.forEach((bar,barIndex)=>{let cursor=barIndex*ppq*4;bar.tokens.forEach(ch=>{const base=cursor;const root=(rootSemitone[ch.root]+ch.acc+120)%12+60;intervals[ch.quality].forEach(semi=>{const note=root+semi;events.push({t:base,p:[0x90,note,88]});events.push({t:base+ch.duration*120-2,p:[0x80,note,0]})});cursor+=ch.duration*120})});
+ bars.forEach((bar,barIndex)=>{let cursor=barIndex*ppq*4;const ticksPerUnit=ppq*4/bar.tokens.reduce((sum,ch)=>sum+ch.duration,0);bar.tokens.forEach(ch=>{const base=Math.round(cursor);const end=Math.round(cursor+ch.duration*ticksPerUnit);const root=(rootSemitone[ch.root]+ch.acc+120)%12+60;intervals[ch.quality].forEach(semi=>{const note=root+semi;events.push({t:base,p:[0x90,note,88]});events.push({t:Math.max(base+1,end-2),p:[0x80,note,0]})});cursor+=ch.duration*ticksPerUnit})});
  events.sort((a,b)=>a.t-b.t);let track=[],last=0;events.forEach(e=>{track.push(...vlq(e.t-last),...e.p);last=e.t});track.push(0,0xff,0x2f,0);
  const data=[...new TextEncoder().encode('MThd'),...be32(6),...be16(0),...be16(1),...be16(ppq),...new TextEncoder().encode('MTrk'),...be32(track.length),...track];return new Uint8Array(data)
 }
