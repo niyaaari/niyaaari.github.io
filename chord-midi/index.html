@@ -39,7 +39,7 @@ h2{font-size:16px;margin:0 0 14px}.field-label{display:block;font-size:13px;marg
 </section>
 <section class="card">
 <h2>入力ルール</h2>
-<p class="hint">コードは「ルート音＋種類の数字」で入力します。コード部分は文字数に関係なく1枠として扱います。</p>
+<p class="hint">コードは「ルート音＋種類の数字」で入力します。数字を省略するとメジャーコード（例：C、F）になります。コード部分は文字数に関係なく1枠として扱います。</p>
 <div class="legend">
 <div><b>0</b> maj7</div><div><b>1</b> m</div><div><b>2</b> dim</div><div><b>3</b> 7sus4</div><div><b>4</b> aug</div><div><b>5</b> m7(-5)</div><div><b>6</b> 6</div><div><b>7</b> 7</div><div><b>8</b> m7</div><div><b>9</b> 9</div>
 </div>
@@ -64,16 +64,16 @@ function parseBar(src){
  const tokens=[];let i=0,units=0;
  while(i<s.length){
   if(s[i]===','){if(!tokens.length)return {error:'小節の先頭に休符は置けません。'};tokens[tokens.length-1].duration++;units++;i++;continue}
-  const m=s.slice(i).match(/^([+-]?)([A-Ga-g])([0-9])/);if(!m)return {error:'入力形式を確認してください。使える形式は A〜G、+/-、0〜9、カンマです。'};
-  const root=m[2].toUpperCase(),quality=Number(m[3]),acc=m[1]==='+'?1:m[1]==='-'?-1:0;
+  const m=s.slice(i).match(/^([+-]?)([A-Ga-g])([0-9])?/);if(!m)return {error:'入力形式を確認してください。使える形式は A〜G、+/-、0〜9、カンマです。数字を省略した場合はメジャーコードになります。'};
+  const root=m[2].toUpperCase(),quality=m[3]===undefined?10:Number(m[3]),acc=m[1]==='+'?1:m[1]==='-'?-1:0;
   tokens.push({root,quality,acc,duration:1});units++;i+=m[0].length;
  }
  if(units>64)return {error:'1小節は最大64枠まで入力できます。'};
  return {tokens};
 }
 const rootSemitone={C:0,D:2,E:4,F:5,G:7,A:9,B:11};
-const intervals=[[0,4,7,11],[0,3,7],[0,3,6],[0,5,7,10],[0,4,8],[0,3,6,10],[0,4,7,9],[0,4,7,10],[0,3,7,10],[0,4,7,10,14]];
-function updateCounts(){[...$('measures').children].forEach(el=>{const v=el.querySelector('textarea').value.replace(/\s/g,'');const count=[...v.matchAll(/[+-]?[A-Ga-g][0-9]|,/g)].length;el.querySelector('.count').textContent=count+' 枠'})}
+const intervals=[[0,4,7,11],[0,3,7],[0,3,6],[0,5,7,10],[0,4,8],[0,3,6,10],[0,4,7,9],[0,4,7,10],[0,3,7,10],[0,4,7,10,14],[0,4,7]];
+function updateCounts(){[...$('measures').children].forEach(el=>{const v=el.querySelector('textarea').value.replace(/\s/g,'');const count=[...v.matchAll(/[+-]?[A-Ga-g][0-9]?|,/g)].length;el.querySelector('.count').textContent=count+' 枠'})}
 function vlq(value){let buffer=value&0x7f;const out=[];while((value>>=7)){buffer<<=8;buffer|=((value&0x7f)|0x80)}while(true){out.push(buffer&255);if(buffer&0x80)buffer>>=8;else break}return out}
 function be16(n){return [(n>>8)&255,n&255]}function be32(n){return [(n>>>24)&255,(n>>>16)&255,(n>>>8)&255,n&255]}
 function makeMidi(bars,bpm){
