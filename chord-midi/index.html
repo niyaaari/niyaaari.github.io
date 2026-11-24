@@ -57,7 +57,9 @@ const themeKey='pantaro_theme';
 function applyTheme(){const dark=localStorage.getItem(themeKey)==='dark';document.documentElement.dataset.theme=dark?'dark':'light';$('themeIcon').innerHTML=dark?'<path d="M20.5 15.2A8.5 8.5 0 0 1 8.8 3.5 8.5 8.5 0 1 0 20.5 15.2Z"/>':'<circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M4.93 4.93l1.42 1.42m11.3 11.3 1.42 1.42M2 12h2m16 0h2M4.93 19.07l1.42-1.42m11.3-11.3 1.42-1.42"/>'}
 $('themeToggle').addEventListener('click',()=>{localStorage.setItem(themeKey,localStorage.getItem(themeKey)==='dark'?'light':'dark');applyTheme()});applyTheme();
 let measureCount=0;
-function addMeasure(value=''){measureCount++;const n=measureCount,el=document.createElement('div');el.className='measure';el.dataset.measure=n;el.innerHTML='<div class="measure-head"><strong>小節 '+n+'</strong><button class="btn remove" type="button">削除</button></div><textarea aria-label="小節 '+n+' のコード進行" placeholder="例：F1,+A2-G3"></textarea><div class="measure-foot"><span class="count">0 / 16 枠</span><span>コード＋カンマ（最大64枠）</span></div>';el.querySelector('textarea').value=value;el.querySelector('textarea').addEventListener('input',()=>updateCounts());el.querySelector('.remove').addEventListener('click',()=>{el.remove();renumber();updateCounts()});$('measures').append(el);renumber();updateCounts()}
+const draftKey='kubearma_chord_midi_draft_v1';
+function saveDraft(){try{localStorage.setItem(draftKey,JSON.stringify({bpm:$('bpm').value,measures:[...$('measures').querySelectorAll('textarea')].map(el=>el.value)}))}catch(e){}}
+function addMeasure(value=''){measureCount++;const n=measureCount,el=document.createElement('div');el.className='measure';el.dataset.measure=n;el.innerHTML='<div class="measure-head"><strong>小節 '+n+'</strong><button class="btn remove" type="button">削除</button></div><textarea aria-label="小節 '+n+' のコード進行" placeholder="例：F1,+A2-G3"></textarea><div class="measure-foot"><span class="count">0 / 16 枠</span><span>コード＋カンマ（最大64枠）</span></div>';el.querySelector('textarea').value=value;el.querySelector('textarea').addEventListener('input',()=>{updateCounts();saveDraft()});el.querySelector('.remove').addEventListener('click',()=>{el.remove();renumber();updateCounts();saveDraft()});$('measures').append(el);renumber();updateCounts()}
 function renumber(){[...$('measures').children].forEach((el,i)=>{el.querySelector('strong').textContent='小節 '+(i+1);el.querySelector('textarea').setAttribute('aria-label','小節 '+(i+1)+' のコード進行')})}
 function parseBar(src){
  const s=src.replace(/\s/g,'');if(!s)return {error:'コードを入力してください。'};
@@ -83,12 +85,13 @@ function makeMidi(bars,bpm){
  events.sort((a,b)=>a.t-b.t);let track=[],last=0;events.forEach(e=>{track.push(...vlq(e.t-last),...e.p);last=e.t});track.push(0,0xff,0x2f,0);
  const data=[...new TextEncoder().encode('MThd'),...be32(6),...be16(0),...be16(1),...be16(ppq),...new TextEncoder().encode('MTrk'),...be32(track.length),...track];return new Uint8Array(data)
 }
-$('addMeasure').addEventListener('click',()=>addMeasure());$('clearAll').addEventListener('click',()=>{if(confirm('すべての小節を削除しますか？')){$('measures').innerHTML='';measureCount=0;addMeasure();$('message').textContent='入力をクリアしました。';$('message').className='message ok'}});
+$('addMeasure').addEventListener('click',()=>{addMeasure();saveDraft()});
+$('bpm').addEventListener('input',saveDraft);$('clearAll').addEventListener('click',()=>{if(confirm('すべての小節を削除しますか？')){$('measures').innerHTML='';measureCount=0;addMeasure();saveDraft();$('message').textContent='入力をクリアしました。';$('message').className='message ok'}});
 $('exportMidi').addEventListener('click',()=>{const bpm=Number($('bpm').value);if(!Number.isInteger(bpm)||bpm<40||bpm>240){$('message').textContent='BPMは40〜240の整数で入力してください。';$('message').className='message error';return}
  const bars=[...$('measures').children].map((el,i)=>{const r=parseBar(el.querySelector('textarea').value);return r.error?{error:'小節'+(i+1)+'：'+r.error}:r});
  const bad=bars.find(x=>x.error);if(bad){$('message').textContent=bad.error;$('message').className='message error';return}
  const midi=makeMidi(bars,bpm),url=URL.createObjectURL(new Blob([midi],{type:'audio/midi'})),a=document.createElement('a');a.href=url;a.download='kubearma-chord-midi.mid';a.click();URL.revokeObjectURL(url);$('message').textContent='MIDIファイルを書き出しました！（ピアノ音色）';$('message').className='message ok'
 });
-addMeasure();
+try{const saved=JSON.parse(localStorage.getItem(draftKey)||'null');if(saved){if(saved.bpm!==undefined)$('bpm').value=saved.bpm;if(Array.isArray(saved.measures)&&saved.measures.length){saved.measures.forEach(value=>addMeasure(String(value??''))) }else addMeasure()}else addMeasure()}catch(e){addMeasure()}
 </script>
 </body></html>
