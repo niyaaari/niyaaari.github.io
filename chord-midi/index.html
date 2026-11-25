@@ -28,6 +28,7 @@ h2{font-size:16px;margin:0 0 14px}.field-label{display:block;font-size:13px;marg
 </header>
 <h1>コードmidi書き起こしくん</h1>
 <p class="sub">コード進行を入力して、ピアノのMIDIファイルに書き出せます。</p>
+<section class="card"><h2>ファイル名</h2><label class="field-label" for="midiFilename">MIDIファイル名</label><div class="filename-row"><input id="midiFilename" type="text" autocomplete="off"><span>.mid</span></div></section>
 <section class="card">
 <h2>テンポ</h2><label class="field-label" for="bpm">BPM（40〜240）</label><div class="bpm-row"><input id="bpm" type="number" min="40" max="240" value="120"><span class="hint">♩ = BPM</span></div>
 </section>
@@ -47,7 +48,7 @@ h2{font-size:16px;margin:0 0 14px}.field-label{display:block;font-size:13px;marg
 <p class="hint">例：<code>F1,+A2-G3</code> → Fm（2枠）→ A#dim（1枠）→ Gb7sus4（1枠）</p>
 <p class="hint">例：<code>-E4</code> → Ebaug</p>
 </section>
-<section class="card"><h2>ファイル名</h2><label class="field-label" for="midiFilename">MIDIファイル名</label><div class="filename-row"><input id="midiFilename" type="text" autocomplete="off"><span>.mid</span></div></section><div class="actions"><button class="btn primary" id="exportMidi">MIDIを書き出す</button></div>
+<div class="actions"><button class="btn primary" id="exportMidi">MIDIを書き出す</button></div>
 <div id="message" class="message" role="status" aria-live="polite"></div>
 <footer class="footer">© kubearma</footer>
 </main>
