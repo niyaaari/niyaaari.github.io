@@ -47,7 +47,7 @@ h2{font-size:16px;margin:0 0 14px}.field-label{display:block;font-size:13px;marg
 <p class="hint">例：<code>F1,+A2-G3</code> → Fm（2枠）→ A#dim（1枠）→ Gb7sus4（1枠）</p>
 <p class="hint">例：<code>-E4</code> → Ebaug</p>
 </section>
-<div class="actions"><button class="btn primary" id="exportMidi">MIDIを書き出す</button></div>
+<section class="card"><h2>ファイル名</h2><label class="field-label" for="midiFilename">MIDIファイル名</label><input id="midiFilename" type="text" placeholder="未入力の場合は chord.mid" autocomplete="off"><p class="hint">拡張子 .mid は自動で付きます。</p></section><div class="actions"><button class="btn primary" id="exportMidi">MIDIを書き出す</button></div>
 <div id="message" class="message" role="status" aria-live="polite"></div>
 <footer class="footer">© kubearma</footer>
 </main>
@@ -92,7 +92,7 @@ $('addCategory').addEventListener('click',()=>{addCategory();saveDraft()});$('ad
 $('exportMidi').addEventListener('click',()=>{const bpm=Number($('bpm').value);if(!Number.isInteger(bpm)||bpm<40||bpm>240){$('message').textContent='BPMは40〜240の整数で入力してください。';$('message').className='message error';return}
  const bars=[...document.querySelectorAll('.measure')].map((el,i)=>{const r=parseBar(el.querySelector('textarea').value);return r.error?{error:'小節'+(i+1)+'：'+r.error}:r});
  const bad=bars.find(x=>x.error);if(bad){$('message').textContent=bad.error;$('message').className='message error';return}
- const midi=makeMidi(bars,bpm),url=URL.createObjectURL(new Blob([midi],{type:'audio/midi'})),a=document.createElement('a');a.href=url;a.download='kubearma-chord-midi.mid';a.click();URL.revokeObjectURL(url);$('message').textContent='MIDIファイルを書き出しました！（ピアノ音色）';$('message').className='message ok'
+ const midi=makeMidi(bars,bpm);let filename=$('midiFilename').value.trim()||'chord';filename=filename.replace(/[\\/:*?\"<>|]/g,'_').replace(/\.mid$/i,'').trim()||'chord';filename+='.mid';const url=URL.createObjectURL(new Blob([midi],{type:'audio/midi'})),a=document.createElement('a');a.href=url;a.download=filename;a.click();URL.revokeObjectURL(url);$('message').textContent='MIDIファイルを書き出しました！（'+filename+'）';$('message').className='message ok'
 });
 try{const saved=JSON.parse(localStorage.getItem(draftKey)||'null');if(saved){if(saved.bpm!==undefined)$('bpm').value=saved.bpm;if(Array.isArray(saved.categories)&&saved.categories.length)saved.categories.forEach(c=>addCategory(c));else if(Array.isArray(saved.measures)){const c=addCategory();saved.measures.forEach(v=>addMeasure(c,String(v??'')))}else{const c=addCategory();addMeasure(c)}}else{const c=addCategory({name:'カテゴリー 1'});addMeasure(c)}}catch(e){const c=addCategory({name:'カテゴリー 1'});addMeasure(c)}renumber();updateCounts();
 </script>
